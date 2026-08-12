@@ -8,19 +8,31 @@ export interface CurrentUser {
    email: string
 }
 
-export async function getCurrentUser(): Promise<CurrentUser> {
-   const response = await fetch(`${API_URL}/user/profile`, {
+async function userRequest<T>(path: string, init?: RequestInit): Promise<T> {
+   const response = await fetch(`${API_URL}${path}`, {
       credentials: "include",
+      headers: init?.body ? { "Content-Type": "application/json" } : undefined,
+      ...init,
    })
 
    const data = await response.json()
 
    if (!response.ok) {
       throw new ApiError(
-         data?.error?.message ?? "No autenticado.",
+         data?.error?.message ?? "Ocurrió un error inesperado.",
          data?.error?.code
       )
    }
 
+   return data
+}
+
+export async function getCurrentUser(): Promise<CurrentUser> {
+   const data = await userRequest<{ user: CurrentUser }>("/user/profile")
    return data.user
+}
+
+export async function getUsers(): Promise<CurrentUser[]> {
+   const data = await userRequest<{ users: CurrentUser[] }>("/user")
+   return data.users
 }

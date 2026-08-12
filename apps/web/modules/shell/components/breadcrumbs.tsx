@@ -15,6 +15,8 @@ const LABELS: Record<string, string> = {
   dashboard: "Dashboard",
   home: "Inicio",
   profile: "Perfil",
+  employees: "Empleados",
+  new: "Nuevo",
 }
 
 function toLabel(segment: string) {

@@ -1,22 +1,29 @@
 import { Employee } from '../models/employee.model.js'
+import { User } from '../models/user.model.js'
 
-export async function createEmployee({ documentType, documentNumber, firstName, middleName, birthDate }) {
-   const existing = await Employee.findOne({ documentNumber })
-   if (existing) {
-      const error = new Error('Ya existe un empleado con ese número de documento')
-      error.status = 409
+async function assertUserIsLinkable(userId, { excludeEmployeeId } = {}) {
+   const user = await User.findById(userId)
+   if (!user) {
+      const error = new Error('El usuario no existe')
+      error.status = 404
+      error.code = 'USER_NOT_FOUND'
       throw error
    }
 
-   return Employee.create({ documentType, documentNumber, firstName, middleName, birthDate })
+   const linkedEmployee = await Employee.findOne({ user: userId })
+   if (linkedEmployee && String(linkedEmployee._id) !== String(excludeEmployeeId)) {
+      const error = new Error('Ese usuario ya está vinculado a otro empleado')
+      error.status = 409
+      throw error
+   }
 }
 
 export async function getEmployees() {
-   return Employee.find().sort({ createdAt: -1 })
+   return Employee.find().sort({ createdAt: -1 }).populate('user', 'name email')
 }
 
 export async function getEmployeeById(id) {
-   const employee = await Employee.findById(id)
+   const employee = await Employee.findById(id).populate('user', 'name email')
    if (!employee) {
       const error = new Error('El empleado no existe')
       error.status = 404
@@ -27,7 +34,20 @@ export async function getEmployeeById(id) {
    return employee
 }
 
-export async function updateEmployee(id, { documentType, documentNumber, firstName, middleName, birthDate }) {
+export async function createEmployee({ documentType, documentNumber, firstName, middleName, lastName, secondLastName, birthDate, user }) {
+   const existing = await Employee.findOne({ documentNumber })
+   if (existing) {
+      const error = new Error('Ya existe un empleado con ese número de documento')
+      error.status = 409
+      throw error
+   }
+
+   await assertUserIsLinkable(user)
+
+   return Employee.create({ documentType, documentNumber, firstName, middleName, lastName, secondLastName, birthDate, user })
+}
+
+export async function updateEmployee(id, { documentType, documentNumber, firstName, middleName, lastName, secondLastName, birthDate, user }) {
    const employee = await Employee.findById(id)
    if (!employee) {
       const error = new Error('El empleado no existe')
@@ -45,11 +65,18 @@ export async function updateEmployee(id, { documentType, documentNumber, firstNa
       }
    }
 
+   if (user && String(user) !== String(employee.user)) {
+      await assertUserIsLinkable(user, { excludeEmployeeId: employee._id })
+   }
+
    if (documentType !== undefined) employee.documentType = documentType
    if (documentNumber !== undefined) employee.documentNumber = documentNumber
    if (firstName !== undefined) employee.firstName = firstName
    if (middleName !== undefined) employee.middleName = middleName
+   if (lastName !== undefined) employee.lastName = lastName
+   if (secondLastName !== undefined) employee.secondLastName = secondLastName
    if (birthDate !== undefined) employee.birthDate = birthDate
+   if (user !== undefined) employee.user = user
 
    return employee.save()
 }

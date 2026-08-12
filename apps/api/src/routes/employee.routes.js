@@ -1,15 +1,15 @@
 import { Router } from 'express'
-import { create, getOne, list, remove, update } from '../controllers/employee.controller.js'
+import * as EmployeeController from '../controllers/employee.controller.js'
 import { authRequired } from '../middlewares/authRequired.js'
 
 const router = Router()
 
 router.use(authRequired)
 
-router.post('/', create)
-router.get('/', list)
-router.get('/:id', getOne)
-router.put('/:id', update)
-router.delete('/:id', remove)
+router.get('/', EmployeeController.getEmployees)
+router.get('/:id', EmployeeController.getEmployeeById)
+router.post('/', EmployeeController.createEmployee)
+router.put('/:id', EmployeeController.updateEmployee)
+router.delete('/:id', EmployeeController.deleteEmployee)
 
 export default router

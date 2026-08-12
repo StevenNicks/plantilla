@@ -22,9 +22,24 @@ const employeeSchema = new mongoose.Schema(
          type: String,
          trim: true,
       },
+      lastName: {
+         type: String,
+         required: true,
+         trim: true,
+      },
+      secondLastName: {
+         type: String,
+         trim: true,
+      },
       birthDate: {
          type: Date,
          required: true,
+      },
+      user: {
+         type: mongoose.Schema.Types.ObjectId,
+         ref: 'User',
+         required: true,
+         unique: true,
       },
    },
    {

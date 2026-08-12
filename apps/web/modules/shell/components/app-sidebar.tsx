@@ -13,7 +13,7 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@workspace/ui/components/sidebar"
-import { GalleryVerticalEndIcon, AudioLinesIcon, TerminalIcon, TerminalSquareIcon, BotIcon, BookOpenIcon, Settings2Icon, FrameIcon, PieChartIcon, MapIcon, LayoutDashboardIcon } from "lucide-react"
+import { GalleryVerticalEndIcon, AudioLinesIcon, TerminalIcon, TerminalSquareIcon, BotIcon, BookOpenIcon, Settings2Icon, FrameIcon, PieChartIcon, MapIcon, LayoutDashboardIcon, UsersIcon } from "lucide-react"
 
 // This is sample data.
 const data = {
@@ -53,13 +53,21 @@ const data = {
       ),
     },
     {
+      title: "Empleados",
+      url: "/employees",
+      icon: (
+        <UsersIcon
+        />
+      ),
+    },
+    {
       title: "Playground",
       url: "#",
       icon: (
         <TerminalSquareIcon
         />
       ),
-      isActive: true,
+      isActive: false,
       items: [
         {
           title: "History",
