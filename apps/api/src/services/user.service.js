@@ -1,18 +1,24 @@
 import { User } from '../models/user.model.js'
+import { Employee } from '../models/employee.model.js'
 
 import bcrypt from 'bcryptjs'
-import { toUpperCaseTrim } from '../utils/funtions.js'
 
 export function toPublicUser(user) {
    return {
       id: user._id,
-      name: user.name,
       email: user.email,
    }
 }
 
-export async function getUsers() {
-   const users = await User.find().sort({ createdAt: -1 })
+export async function getUsers({ unlinked } = {}) {
+   const filter = {}
+
+   if (unlinked) {
+      const linkedUserIds = await Employee.distinct('user')
+      filter._id = { $nin: linkedUserIds }
+   }
+
+   const users = await User.find(filter).sort({ createdAt: -1 })
    return users.map(toPublicUser)
 }
 
@@ -28,7 +34,7 @@ export async function getUserById(id) {
    return toPublicUser(user)
 }
 
-export async function createUser({ name, email, password }) {
+export async function createUser({ email, password }) {
    const existing = await User.findOne({ email })
    if (existing) {
       const error = new Error('Ya existe un usuario con ese correo')
@@ -38,10 +44,10 @@ export async function createUser({ name, email, password }) {
 
    const hashedPassword = await bcrypt.hash(password, 10)
 
-   return User.create({ name: toUpperCaseTrim(name), email, password: hashedPassword })
+   return User.create({ email, password: hashedPassword })
 }
 
-export async function updateUser(id, { name, email }) {
+export async function updateUser(id, { email }) {
    const user = await User.findById(id)
    if (!user) {
       const error = new Error('El usuario no existe')
@@ -59,7 +65,6 @@ export async function updateUser(id, { name, email }) {
       }
    }
 
-   if (name !== undefined) user.name = toUpperCaseTrim(name)
    if (email !== undefined) user.email = email
 
    await user.save()
@@ -75,6 +80,8 @@ export async function deleteUser(id) {
       error.code = 'USER_NOT_FOUND'
       throw error
    }
+
+   await Employee.deleteOne({ user: id })
 
    return toPublicUser(user)
 }

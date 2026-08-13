@@ -1,8 +1,8 @@
 import { createAccessToken } from '../libs/jwt.js'
 import { createUser, findByEmail, toPublicUser, verifyPassword } from './user.service.js'
 
-export async function registerService({ name, email, password }) {
-   const user = await createUser({ name, email, password })
+export async function registerService({ email, password }) {
+   const user = await createUser({ email, password })
    const token = await createAccessToken({ id: user._id })
 
    return { user: toPublicUser(user), token }

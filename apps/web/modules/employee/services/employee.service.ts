@@ -5,9 +5,16 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL
 export const DOCUMENT_TYPES = ["CC", "CE", "TI", "PA", "RC"] as const
 export type DocumentType = (typeof DOCUMENT_TYPES)[number]
 
+export const DOCUMENT_TYPE_LABELS: Record<DocumentType, string> = {
+   CC: "Cédula de ciudadanía",
+   CE: "Cédula de extranjería",
+   TI: "Tarjeta de identidad",
+   PA: "Pasaporte",
+   RC: "Registro civil",
+}
+
 export interface EmployeeUser {
    id: string
-   name: string
    email: string
 }
 
@@ -34,6 +41,29 @@ export interface EmployeePayload {
    secondLastName?: string
    birthDate: string
    user: string
+}
+
+export interface EmployeeWithUserPayload {
+   documentType: DocumentType
+   documentNumber: string
+   firstName: string
+   middleName?: string
+   lastName: string
+   secondLastName?: string
+   birthDate: string
+   email: string
+   password: string
+}
+
+export function getEmployeeFullName(employee: {
+   firstName: string
+   middleName?: string
+   lastName: string
+   secondLastName?: string
+}): string {
+   return [employee.firstName, employee.middleName, employee.lastName, employee.secondLastName]
+      .filter(Boolean)
+      .join(" ")
 }
 
 async function employeeRequest<T>(path: string, init?: RequestInit): Promise<T> {
@@ -65,8 +95,21 @@ export async function getEmployeeById(id: string): Promise<Employee> {
    return data.employee
 }
 
+export async function getEmployeeByUserId(userId: string): Promise<Employee | null> {
+   const data = await employeeRequest<{ employee: Employee | null }>(`/by-user/${userId}`)
+   return data.employee
+}
+
 export async function createEmployee(payload: EmployeePayload): Promise<Employee> {
    const data = await employeeRequest<{ employee: Employee }>("", {
+      method: "POST",
+      body: JSON.stringify(payload),
+   })
+   return data.employee
+}
+
+export async function createEmployeeWithUser(payload: EmployeeWithUserPayload): Promise<Employee> {
+   const data = await employeeRequest<{ employee: Employee }>("/with-user", {
       method: "POST",
       body: JSON.stringify(payload),
    })

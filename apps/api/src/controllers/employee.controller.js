@@ -20,6 +20,16 @@ export async function getEmployeeById(req, res, next) {
    }
 }
 
+export async function getEmployeeByUserId(req, res, next) {
+   try {
+      const employee = await EmployeeService.getEmployeeByUserId(req.params.userId)
+
+      res.status(200).json({ status: 'success', employee })
+   } catch (error) {
+      next(error)
+   }
+}
+
 export async function createEmployee(req, res, next) {
    try {
       const { documentType, documentNumber, firstName, middleName, lastName, secondLastName, birthDate, user } = req.body
@@ -31,6 +41,24 @@ export async function createEmployee(req, res, next) {
       }
 
       const employee = await EmployeeService.createEmployee({ documentType, documentNumber, firstName, middleName, lastName, secondLastName, birthDate, user })
+
+      res.status(201).json({ status: 'success', employee })
+   } catch (error) {
+      next(error)
+   }
+}
+
+export async function createEmployeeWithUser(req, res, next) {
+   try {
+      const { documentType, documentNumber, firstName, middleName, lastName, secondLastName, birthDate, email, password } = req.body
+
+      if (!documentType || !documentNumber || !firstName || !lastName || !birthDate || !email || !password) {
+         return res.status(400).json({
+            error: { message: 'documentType, documentNumber, firstName, lastName, birthDate, email y password son obligatorios' },
+         })
+      }
+
+      const employee = await EmployeeService.createEmployeeWithUser({ documentType, documentNumber, firstName, middleName, lastName, secondLastName, birthDate, email, password })
 
       res.status(201).json({ status: 'success', employee })
    } catch (error) {

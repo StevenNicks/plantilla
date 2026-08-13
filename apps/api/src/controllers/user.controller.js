@@ -12,13 +12,13 @@ export async function profile(req, res, next) {
 
 export async function createUser(req, res, next) {
    try {
-      const { name, email, password } = req.body
+      const { email, password } = req.body
 
-      if (!name || !email || !password) {
-         return res.status(400).json({ error: { message: 'name, email y password son obligatorios' } })
+      if (!email || !password) {
+         return res.status(400).json({ error: { message: 'email y password son obligatorios' } })
       }
 
-      const user = await UserService.createUser({ name, email, password })
+      const user = await UserService.createUser({ email, password })
 
       res.status(201).json({ status: 'success', user: UserService.toPublicUser(user) })
    } catch (error) {
@@ -28,7 +28,7 @@ export async function createUser(req, res, next) {
 
 export async function getUsers(req, res, next) {
    try {
-      const users = await UserService.getUsers()
+      const users = await UserService.getUsers({ unlinked: req.query.unlinked === 'true' })
 
       res.status(200).json({ status: 'success', users })
    } catch (error) {
@@ -48,9 +48,9 @@ export async function getUserById(req, res, next) {
 
 export async function updateUser(req, res, next) {
    try {
-      const { name, email } = req.body
+      const { email } = req.body
 
-      const user = await UserService.updateUser(req.params.id, { name, email })
+      const user = await UserService.updateUser(req.params.id, { email })
 
       res.status(200).json({ status: 'success', user })
    } catch (error) {

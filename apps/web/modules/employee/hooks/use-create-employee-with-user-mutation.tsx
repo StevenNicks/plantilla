@@ -2,16 +2,17 @@
 
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
-import { createEmployee } from "@/modules/employee/services/employee.service"
+import { createEmployeeWithUser } from "@/modules/employee/services/employee.service"
 
-export function useCreateEmployeeMutation() {
+export function useCreateEmployeeWithUserMutation() {
    const queryClient = useQueryClient()
 
    return useMutation({
-      mutationFn: createEmployee,
+      mutationFn: createEmployeeWithUser,
       onSuccess: () => {
-         toast.success("Empleado creado correctamente.")
+         toast.success("Empleado y usuario creados correctamente.")
          queryClient.invalidateQueries({ queryKey: ["employees"] })
+         queryClient.invalidateQueries({ queryKey: ["users"] })
       },
       onError: (error: Error) => {
          toast.error(error.message)

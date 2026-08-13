@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { toUpperCaseTrim } from '../utils/funtions.js';
 
 const employeeSchema = new mongoose.Schema(
    {
@@ -17,19 +18,23 @@ const employeeSchema = new mongoose.Schema(
          type: String,
          required: true,
          trim: true,
+         set: toUpperCaseTrim,
       },
       middleName: {
          type: String,
          trim: true,
+         set: toUpperCaseTrim,
       },
       lastName: {
          type: String,
          required: true,
          trim: true,
+         set: toUpperCaseTrim,
       },
       secondLastName: {
          type: String,
          trim: true,
+         set: toUpperCaseTrim,
       },
       birthDate: {
          type: Date,

@@ -11,17 +11,17 @@ const COOKIE_OPTIONS = {
 
 export async function register(req, res, next) {
    try {
-      const { name, email, password } = req.body
+      const { email, password } = req.body
 
-      if (!name || !email || !password) {
-         return res.status(400).json({ error: { message: 'name, email y password son obligatorios' } })
+      if (!email || !password) {
+         return res.status(400).json({ error: { message: 'email y password son obligatorios' } })
       }
 
-      const { user, token } = await registerService({ name, email, password })
+      const { user, token } = await registerService({ email, password })
 
       res.cookie('token', token, COOKIE_OPTIONS).status(201).json({
          status: 'success',
-         message: `Bienvenido ${user.name}`,
+         message: `Bienvenido ${user.email}`,
       })
    } catch (error) {
       next(error)
@@ -40,7 +40,7 @@ export async function login(req, res, next) {
 
       res.cookie('token', token, COOKIE_OPTIONS).status(200).json({
          status: 'success',
-         message: `Bienvenido ${user.name}`,
+         message: `Bienvenido ${user.email}`,
       })
    } catch (error) {
       next(error)

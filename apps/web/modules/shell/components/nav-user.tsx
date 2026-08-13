@@ -24,6 +24,8 @@ import {
 import { ChevronsUpDownIcon, UserRound, SparklesIcon, BadgeCheckIcon, CreditCardIcon, BellIcon, LogOutIcon, Moon } from "lucide-react"
 import { Switch } from "@workspace/ui/components/switch"
 import { useCurrentUser } from "@/modules/user/hooks/use-current-user"
+import { useEmployeeByUser } from "@/modules/employee/hooks/use-employee-by-user"
+import { getEmployeeFullName } from "@/modules/employee/services/employee.service"
 import { useLogoutMutation } from "@/modules/auth/hooks/use-logout-mutation"
 import { getInitials } from "@/modules/user/utils"
 import { useRouter } from "next/navigation"
@@ -31,6 +33,7 @@ import { useRouter } from "next/navigation"
 export function NavUser() {
   const { isMobile } = useSidebar()
   const { data: user } = useCurrentUser()
+  const { data: employee } = useEmployeeByUser(user?.id)
 
   const { resolvedTheme, setTheme } = useTheme()
   const logoutMutation = useLogoutMutation()
@@ -39,6 +42,8 @@ export function NavUser() {
   if (!user) {
     return null
   }
+
+  const displayName = employee ? getEmployeeFullName(employee) : user.email
 
   return (
     <SidebarMenu>
@@ -50,11 +55,11 @@ export function NavUser() {
             }
           >
             <Avatar>
-              <AvatarImage alt={user.name} />
-              <AvatarFallback>{getInitials(user.name)}</AvatarFallback>
+              <AvatarImage alt={displayName} />
+              <AvatarFallback>{getInitials(displayName)}</AvatarFallback>
             </Avatar>
             <div className="grid flex-1 text-left text-sm leading-tight">
-              <span className="truncate font-medium">{user.name}</span>
+              <span className="truncate font-medium">{displayName}</span>
               <span className="truncate text-xs">{user.email}</span>
             </div>
             <ChevronsUpDownIcon className="ml-auto size-4" />
@@ -69,11 +74,11 @@ export function NavUser() {
               <DropdownMenuLabel className="p-0 font-normal">
                 <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                   <Avatar>
-                    <AvatarImage alt={user.name} />
-                    <AvatarFallback>{getInitials(user.name)}</AvatarFallback>
+                    <AvatarImage alt={displayName} />
+                    <AvatarFallback>{getInitials(displayName)}</AvatarFallback>
                   </Avatar>
                   <div className="grid flex-1 text-left text-sm leading-tight">
-                    <span className="truncate font-medium">{user.name}</span>
+                    <span className="truncate font-medium">{displayName}</span>
                     <span className="truncate text-xs">{user.email}</span>
                   </div>
                 </div>

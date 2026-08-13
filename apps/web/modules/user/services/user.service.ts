@@ -4,7 +4,6 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL
 
 export interface CurrentUser {
    id: string
-   name: string
    email: string
 }
 
@@ -32,7 +31,8 @@ export async function getCurrentUser(): Promise<CurrentUser> {
    return data.user
 }
 
-export async function getUsers(): Promise<CurrentUser[]> {
-   const data = await userRequest<{ users: CurrentUser[] }>("/user")
+export async function getUsers(params?: { unlinked?: boolean }): Promise<CurrentUser[]> {
+   const query = params?.unlinked ? "?unlinked=true" : ""
+   const data = await userRequest<{ users: CurrentUser[] }>(`/user${query}`)
    return data.users
 }

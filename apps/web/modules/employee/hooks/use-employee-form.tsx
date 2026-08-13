@@ -8,7 +8,7 @@ import {
 } from "@/modules/employee/schemas/employee.schema"
 
 const EMPTY_VALUES: EmployeeSchemaTypes = {
-   documentType: "CC",
+   documentType: "" as EmployeeSchemaTypes["documentType"],
    documentNumber: "",
    firstName: "",
    middleName: "",

@@ -39,23 +39,6 @@ export function SignupForm({
                 </p>
               </div>
               <Controller
-                name="name"
-                control={form.control}
-                render={({ field, fieldState }) => (
-                  <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor={field.name}>Nombre</FieldLabel>
-                    <Input
-                      {...field}
-                      id={field.name}
-                      placeholder="Tu nombre"
-                      autoFocus
-                      aria-invalid={fieldState.invalid}
-                    />
-                    {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-                  </Field>
-                )}
-              />
-              <Controller
                 name="email"
                 control={form.control}
                 render={({ field, fieldState }) => (
@@ -66,6 +49,7 @@ export function SignupForm({
                       id={field.name}
                       type="email"
                       placeholder="m@example.com"
+                      autoFocus
                       aria-invalid={fieldState.invalid}
                     />
                     {fieldState.invalid && <FieldError errors={[fieldState.error]} />}

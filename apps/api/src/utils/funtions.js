@@ -8,5 +8,6 @@
    };
 
    export const toUpperCaseTrim = (texto) => {
+      if (!texto) return texto;
       return texto.trim().toUpperCase();
    };
