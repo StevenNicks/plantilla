@@ -87,6 +87,28 @@ export async function updateEmployee(req, res, next) {
    }
 }
 
+export async function updateEmployeeWithUser(req, res, next) {
+   try {
+      const { documentType, documentNumber, firstName, middleName, lastName, secondLastName, birthDate, email, password } = req.body
+
+      const employee = await EmployeeService.updateEmployeeWithUser(req.params.id, {
+         documentType,
+         documentNumber,
+         firstName,
+         middleName,
+         lastName,
+         secondLastName,
+         birthDate,
+         email,
+         password,
+      })
+
+      res.status(200).json({ status: 'success', employee })
+   } catch (error) {
+      next(error)
+   }
+}
+
 export async function deleteEmployee(req, res, next) {
    try {
       await EmployeeService.deleteEmployee(req.params.id)

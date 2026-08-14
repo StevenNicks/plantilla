@@ -1,5 +1,6 @@
 "use client"
 
+import Image from "next/image"
 import { Controller } from "react-hook-form"
 import { cn } from "@workspace/ui/lib/utils"
 import { Button } from "@workspace/ui/components/button"
@@ -71,6 +72,7 @@ export function LoginForm({
                                  value={field.value}
                                  onValueChange={field.onChange}
                                  forgotPasswordSlot={<ForgotPasswordDialog />}
+                                 invalid={fieldState.invalid}
                               />
                               {fieldState.invalid && (
                                  <FieldError errors={[fieldState.error]} />
@@ -90,10 +92,13 @@ export function LoginForm({
                   </FieldGroup>
                </form>
                <div className="relative hidden bg-muted md:block">
-                  <img
+                  <Image
                      src="/placeholder.png"
                      alt="Imagen"
-                     className="absolute inset-0 h-full w-full object-cover"
+                     fill
+                     priority
+                     sizes="(min-width: 768px) 50vw, 0px"
+                     className="object-cover"
                   />
                </div>
             </CardContent>

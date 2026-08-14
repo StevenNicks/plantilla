@@ -12,6 +12,7 @@ router.get('/:id', EmployeeController.getEmployeeById)
 router.post('/', EmployeeController.createEmployee)
 router.post('/with-user', EmployeeController.createEmployeeWithUser)
 router.put('/:id', EmployeeController.updateEmployee)
+router.put('/:id/with-user', EmployeeController.updateEmployeeWithUser)
 router.delete('/:id', EmployeeController.deleteEmployee)
 
 export default router

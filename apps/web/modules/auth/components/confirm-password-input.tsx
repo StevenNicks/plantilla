@@ -16,6 +16,7 @@ interface ConfirmPasswordInputProps {
   password: string
   value?: string
   onValueChange?: (value: string) => void
+  invalid?: boolean
 }
 
 export function ConfirmPasswordInput({
@@ -24,6 +25,7 @@ export function ConfirmPasswordInput({
   password,
   value,
   onValueChange,
+  invalid,
 }: ConfirmPasswordInputProps) {
   const [internalConfirmPassword, setInternalConfirmPassword] = useState("")
   const [isVisible, setIsVisible] = useState(false)
@@ -55,7 +57,7 @@ export function ConfirmPasswordInput({
           placeholder="********"
           value={confirmPassword}
           onChange={(e) => handleChange(e.target.value)}
-          required
+          aria-invalid={invalid || (!matches && confirmPassword.length > 0)}
         />
         <InputGroupAddon align="inline-end">
           <Button

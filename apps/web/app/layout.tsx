@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google"
 
 import "@workspace/ui/globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
+import { ColorThemeProvider } from "@/components/color-theme-provider"
 import { QueryProvider } from "@/components/query-provider"
 import { TooltipProvider } from "@workspace/ui/components/tooltip"
 import { Toaster } from "@workspace/ui/components/sonner"
@@ -30,13 +31,20 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       className={cn("antialiased", fontMono.variable, "font-sans", geist.variable)}
     >
       <body>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem("color-theme");if(["lime","indigo","purple","violet","yellow","emerald"].indexOf(t)!==-1)document.documentElement.setAttribute("data-color-theme",t);}catch(e){}})();`,
+          }}
+        />
         <ThemeProvider>
-          <QueryProvider>
-            <TooltipProvider>
-              {children}
-              <Toaster />
-            </TooltipProvider>
-          </QueryProvider>
+          <ColorThemeProvider>
+            <QueryProvider>
+              <TooltipProvider>
+                {children}
+                <Toaster />
+              </TooltipProvider>
+            </QueryProvider>
+          </ColorThemeProvider>
         </ThemeProvider>
       </body>
     </html>

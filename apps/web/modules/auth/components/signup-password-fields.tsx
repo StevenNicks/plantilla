@@ -25,6 +25,7 @@ export function SignupPasswordFields({ control }: SignupPasswordFieldsProps) {
                      label="Contraseña"
                      value={field.value}
                      onValueChange={field.onChange}
+                     invalid={fieldState.invalid}
                   />
                   {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                </Field>
@@ -41,6 +42,7 @@ export function SignupPasswordFields({ control }: SignupPasswordFieldsProps) {
                      password={password}
                      value={field.value}
                      onValueChange={field.onChange}
+                     invalid={fieldState.invalid}
                   />
                   {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                </Field>

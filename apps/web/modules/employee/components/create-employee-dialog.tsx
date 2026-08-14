@@ -1,7 +1,7 @@
 "use client"
 
 import { useId, useState } from "react"
-import { Controller, useWatch } from "react-hook-form"
+import { Controller } from "react-hook-form"
 import { PlusIcon } from "lucide-react"
 import { Button } from "@workspace/ui/components/button"
 import {
@@ -16,8 +16,6 @@ import {
 } from "@workspace/ui/components/dialog"
 import { Field, FieldError, FieldGroup, FieldLabel } from "@workspace/ui/components/field"
 import { Input } from "@workspace/ui/components/input"
-import { PasswordStrengthInput } from "@/modules/auth/components/password-strength-input"
-import { ConfirmPasswordInput } from "@/modules/auth/components/confirm-password-input"
 import { EmployeeFields } from "@/modules/employee/components/employee-fields"
 import { useEmployeeWithUserForm } from "@/modules/employee/hooks/use-employee-with-user-form"
 import { useCreateEmployeeWithUserMutation } from "@/modules/employee/hooks/use-create-employee-with-user-mutation"
@@ -26,7 +24,6 @@ export function CreateEmployeeDialog() {
    const formId = useId()
    const [open, setOpen] = useState(false)
    const { form } = useEmployeeWithUserForm()
-   const password = useWatch({ control: form.control, name: "password" })
    const createEmployeeMutation = useCreateEmployeeWithUserMutation()
 
    return (
@@ -39,13 +36,16 @@ export function CreateEmployeeDialog() {
       >
          <form
             id={formId}
-            onSubmit={form.handleSubmit(({ confirmPassword, ...values }) =>
-               createEmployeeMutation.mutate(values, {
-                  onSuccess: () => {
-                     setOpen(false)
-                     form.reset()
-                  },
-               })
+            onSubmit={form.handleSubmit((values) =>
+               createEmployeeMutation.mutate(
+                  { ...values, password: values.documentNumber },
+                  {
+                     onSuccess: () => {
+                        setOpen(false)
+                        form.reset()
+                     },
+                  }
+               )
             )}
          >
             <DialogTrigger render={<Button />}>
@@ -58,7 +58,7 @@ export function CreateEmployeeDialog() {
                <DialogTitle>Nuevo empleado</DialogTitle>
                <DialogDescription>
                   Completa la información para registrar un nuevo empleado. Se creará también
-                  su cuenta de acceso.
+                  su cuenta de acceso, usando el número de documento como contraseña inicial.
                </DialogDescription>
             </DialogHeader>
             <FieldGroup>
@@ -81,40 +81,6 @@ export function CreateEmployeeDialog() {
                      </Field>
                   )}
                />
-
-               <div className="grid gap-4 sm:grid-cols-2">
-                  <Controller
-                     name="password"
-                     control={form.control}
-                     render={({ field, fieldState }) => (
-                        <Field data-invalid={fieldState.invalid}>
-                           <PasswordStrengthInput
-                              id="password"
-                              label="Contraseña"
-                              value={field.value}
-                              onValueChange={field.onChange}
-                           />
-                           {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-                        </Field>
-                     )}
-                  />
-                  <Controller
-                     name="confirmPassword"
-                     control={form.control}
-                     render={({ field, fieldState }) => (
-                        <Field data-invalid={fieldState.invalid}>
-                           <ConfirmPasswordInput
-                              id="confirm-password"
-                              label="Confirmar contraseña"
-                              password={password}
-                              value={field.value}
-                              onValueChange={field.onChange}
-                           />
-                           {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-                        </Field>
-                     )}
-                  />
-               </div>
             </FieldGroup>
             <DialogFooter>
                <DialogClose render={<Button variant="outline" type="button" />}>

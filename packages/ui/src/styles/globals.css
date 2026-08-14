@@ -119,6 +119,150 @@
     --sidebar-ring: oklch(0.552 0.016 285.938);
 }
 
+[data-color-theme="lime"] {
+    --primary: oklch(0.841 0.238 128.85);
+    --primary-foreground: oklch(0.405 0.101 131.063);
+    --chart-1: oklch(0.897 0.196 126.665);
+    --chart-2: oklch(0.768 0.233 130.85);
+    --chart-3: oklch(0.648 0.2 131.684);
+    --chart-4: oklch(0.532 0.157 131.589);
+    --chart-5: oklch(0.453 0.124 130.933);
+    --sidebar-primary: oklch(0.648 0.2 131.684);
+    --sidebar-primary-foreground: oklch(0.986 0.031 120.757);
+}
+
+.dark[data-color-theme="lime"] {
+    --primary: oklch(0.768 0.233 130.85);
+    --primary-foreground: oklch(0.405 0.101 131.063);
+    --chart-1: oklch(0.897 0.196 126.665);
+    --chart-2: oklch(0.768 0.233 130.85);
+    --chart-3: oklch(0.648 0.2 131.684);
+    --chart-4: oklch(0.532 0.157 131.589);
+    --chart-5: oklch(0.453 0.124 130.933);
+    --sidebar-primary: oklch(0.768 0.233 130.85);
+    --sidebar-primary-foreground: oklch(0.274 0.072 132.109);
+}
+
+[data-color-theme="indigo"] {
+    --primary: oklch(0.457 0.24 277.023);
+    --primary-foreground: oklch(0.962 0.018 272.314);
+    --chart-1: oklch(0.785 0.115 274.713);
+    --chart-2: oklch(0.585 0.233 277.117);
+    --chart-3: oklch(0.511 0.262 276.966);
+    --chart-4: oklch(0.457 0.24 277.023);
+    --chart-5: oklch(0.398 0.195 277.366);
+    --sidebar-primary: oklch(0.511 0.262 276.966);
+    --sidebar-primary-foreground: oklch(0.962 0.018 272.314);
+}
+
+.dark[data-color-theme="indigo"] {
+    --primary: oklch(0.398 0.195 277.366);
+    --primary-foreground: oklch(0.962 0.018 272.314);
+    --chart-1: oklch(0.785 0.115 274.713);
+    --chart-2: oklch(0.585 0.233 277.117);
+    --chart-3: oklch(0.511 0.262 276.966);
+    --chart-4: oklch(0.457 0.24 277.023);
+    --chart-5: oklch(0.398 0.195 277.366);
+    --sidebar-primary: oklch(0.585 0.233 277.117);
+    --sidebar-primary-foreground: oklch(0.962 0.018 272.314);
+}
+
+[data-color-theme="purple"] {
+    --primary: oklch(0.496 0.265 301.924);
+    --primary-foreground: oklch(0.977 0.014 308.299);
+    --chart-1: oklch(0.827 0.119 306.383);
+    --chart-2: oklch(0.627 0.265 303.9);
+    --chart-3: oklch(0.558 0.288 302.321);
+    --chart-4: oklch(0.496 0.265 301.924);
+    --chart-5: oklch(0.438 0.218 303.724);
+    --sidebar-primary: oklch(0.558 0.288 302.321);
+    --sidebar-primary-foreground: oklch(0.977 0.014 308.299);
+}
+
+.dark[data-color-theme="purple"] {
+    --primary: oklch(0.438 0.218 303.724);
+    --primary-foreground: oklch(0.977 0.014 308.299);
+    --chart-1: oklch(0.827 0.119 306.383);
+    --chart-2: oklch(0.627 0.265 303.9);
+    --chart-3: oklch(0.558 0.288 302.321);
+    --chart-4: oklch(0.496 0.265 301.924);
+    --chart-5: oklch(0.438 0.218 303.724);
+    --sidebar-primary: oklch(0.627 0.265 303.9);
+    --sidebar-primary-foreground: oklch(0.977 0.014 308.299);
+}
+
+[data-color-theme="violet"] {
+    --primary: oklch(0.491 0.27 292.581);
+    --primary-foreground: oklch(0.969 0.016 293.756);
+    --chart-1: oklch(0.811 0.111 293.571);
+    --chart-2: oklch(0.606 0.25 292.717);
+    --chart-3: oklch(0.541 0.281 293.009);
+    --chart-4: oklch(0.491 0.27 292.581);
+    --chart-5: oklch(0.432 0.232 292.759);
+    --sidebar-primary: oklch(0.541 0.281 293.009);
+    --sidebar-primary-foreground: oklch(0.969 0.016 293.756);
+}
+
+.dark[data-color-theme="violet"] {
+    --primary: oklch(0.432 0.232 292.759);
+    --primary-foreground: oklch(0.969 0.016 293.756);
+    --chart-1: oklch(0.811 0.111 293.571);
+    --chart-2: oklch(0.606 0.25 292.717);
+    --chart-3: oklch(0.541 0.281 293.009);
+    --chart-4: oklch(0.491 0.27 292.581);
+    --chart-5: oklch(0.432 0.232 292.759);
+    --sidebar-primary: oklch(0.606 0.25 292.717);
+    --sidebar-primary-foreground: oklch(0.969 0.016 293.756);
+}
+
+[data-color-theme="yellow"] {
+    --primary: oklch(0.852 0.199 91.936);
+    --primary-foreground: oklch(0.421 0.095 57.708);
+    --chart-1: oklch(0.905 0.182 98.111);
+    --chart-2: oklch(0.795 0.184 86.047);
+    --chart-3: oklch(0.681 0.162 75.834);
+    --chart-4: oklch(0.554 0.135 66.442);
+    --chart-5: oklch(0.476 0.114 61.907);
+    --sidebar-primary: oklch(0.681 0.162 75.834);
+    --sidebar-primary-foreground: oklch(0.987 0.026 102.212);
+}
+
+.dark[data-color-theme="yellow"] {
+    --primary: oklch(0.795 0.184 86.047);
+    --primary-foreground: oklch(0.421 0.095 57.708);
+    --chart-1: oklch(0.905 0.182 98.111);
+    --chart-2: oklch(0.795 0.184 86.047);
+    --chart-3: oklch(0.681 0.162 75.834);
+    --chart-4: oklch(0.554 0.135 66.442);
+    --chart-5: oklch(0.476 0.114 61.907);
+    --sidebar-primary: oklch(0.795 0.184 86.047);
+    --sidebar-primary-foreground: oklch(0.987 0.026 102.212);
+}
+
+[data-color-theme="emerald"] {
+    --primary: oklch(0.508 0.118 165.612);
+    --primary-foreground: oklch(0.979 0.021 166.113);
+    --chart-1: oklch(0.845 0.143 164.978);
+    --chart-2: oklch(0.696 0.17 162.48);
+    --chart-3: oklch(0.596 0.145 163.225);
+    --chart-4: oklch(0.508 0.118 165.612);
+    --chart-5: oklch(0.432 0.095 166.913);
+    --sidebar-primary: oklch(0.596 0.145 163.225);
+    --sidebar-primary-foreground: oklch(0.979 0.021 166.113);
+}
+
+.dark[data-color-theme="emerald"] {
+    --primary: oklch(0.432 0.095 166.913);
+    --primary-foreground: oklch(0.979 0.021 166.113);
+    --chart-1: oklch(0.845 0.143 164.978);
+    --chart-2: oklch(0.696 0.17 162.48);
+    --chart-3: oklch(0.596 0.145 163.225);
+    --chart-4: oklch(0.508 0.118 165.612);
+    --chart-5: oklch(0.432 0.095 166.913);
+    --sidebar-primary: oklch(0.696 0.17 162.48);
+    --sidebar-primary-foreground: oklch(0.262 0.051 172.552);
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

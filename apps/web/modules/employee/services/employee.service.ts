@@ -55,6 +55,17 @@ export interface EmployeeWithUserPayload {
    password: string
 }
 
+export interface EmployeeUpdateWithUserPayload {
+   documentType: DocumentType
+   documentNumber: string
+   firstName: string
+   middleName?: string
+   lastName: string
+   secondLastName?: string
+   birthDate: string
+   email: string
+}
+
 export function getEmployeeFullName(employee: {
    firstName: string
    middleName?: string
@@ -116,8 +127,11 @@ export async function createEmployeeWithUser(payload: EmployeeWithUserPayload): 
    return data.employee
 }
 
-export async function updateEmployee(id: string, payload: EmployeePayload): Promise<Employee> {
-   const data = await employeeRequest<{ employee: Employee }>(`/${id}`, {
+export async function updateEmployeeWithUser(
+   id: string,
+   payload: EmployeeUpdateWithUserPayload
+): Promise<Employee> {
+   const data = await employeeRequest<{ employee: Employee }>(`/${id}/with-user`, {
       method: "PUT",
       body: JSON.stringify(payload),
    })

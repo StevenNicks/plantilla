@@ -22,10 +22,30 @@ const userSchema = new mongoose.Schema(
          type: String,
          select: false,
       },
+      passwordResetTokenHash: {
+         type: String,
+         select: false,
+      },
+      passwordResetExpires: {
+         type: Date,
+         select: false,
+      },
    },
    {
       timestamps: true, // agrega createdAt y updatedAt automáticamente
    }
 );
+
+userSchema.set('toJSON', {
+   virtuals: true,
+   transform: (_doc, ret) => {
+      delete ret._id
+      delete ret.__v
+      delete ret.password
+      delete ret.rememberToken
+      delete ret.passwordResetTokenHash
+      delete ret.passwordResetExpires
+   },
+})
 
 export const User = mongoose.model('User', userSchema);

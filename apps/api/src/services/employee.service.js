@@ -1,6 +1,6 @@
 import { Employee } from '../models/employee.model.js'
 import { User } from '../models/user.model.js'
-import { createUser } from './user.service.js'
+import { createUser, updateUser } from './user.service.js'
 
 async function assertUserIsLinkable(userId, { excludeEmployeeId } = {}) {
    const user = await User.findById(userId)
@@ -133,6 +133,39 @@ export async function updateEmployee(id, { documentType, documentNumber, firstNa
    if (secondLastName !== undefined) employee.secondLastName = secondLastName
    if (birthDate !== undefined) employee.birthDate = birthDate
    if (user !== undefined) employee.user = user
+
+   return employee.save()
+}
+
+export async function updateEmployeeWithUser(id, { documentType, documentNumber, firstName, middleName, lastName, secondLastName, birthDate, email, password }) {
+   const employee = await Employee.findById(id)
+   if (!employee) {
+      const error = new Error('El empleado no existe')
+      error.status = 404
+      error.code = 'EMPLOYEE_NOT_FOUND'
+      throw error
+   }
+
+   if (documentNumber && documentNumber !== employee.documentNumber) {
+      const existing = await Employee.findOne({ documentNumber })
+      if (existing) {
+         const error = new Error('Ya existe un empleado con ese número de documento')
+         error.status = 409
+         throw error
+      }
+   }
+
+   if (email !== undefined || password) {
+      await updateUser(employee.user, { email, password })
+   }
+
+   if (documentType !== undefined) employee.documentType = documentType
+   if (documentNumber !== undefined) employee.documentNumber = documentNumber
+   if (firstName !== undefined) employee.firstName = firstName
+   if (middleName !== undefined) employee.middleName = middleName
+   if (lastName !== undefined) employee.lastName = lastName
+   if (secondLastName !== undefined) employee.secondLastName = secondLastName
+   if (birthDate !== undefined) employee.birthDate = birthDate
 
    return employee.save()
 }

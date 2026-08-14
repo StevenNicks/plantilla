@@ -51,6 +51,7 @@ interface PasswordStrengthInputProps {
   forgotPasswordSlot?: React.ReactNode
   value?: string
   onValueChange?: (value: string) => void
+  invalid?: boolean
 }
 
 export function PasswordStrengthInput({
@@ -59,6 +60,7 @@ export function PasswordStrengthInput({
   forgotPasswordSlot,
   value,
   onValueChange,
+  invalid,
 }: PasswordStrengthInputProps) {
   const [internalPassword, setInternalPassword] = useState("")
   const [isVisible, setIsVisible] = useState(false)
@@ -101,7 +103,7 @@ export function PasswordStrengthInput({
           placeholder="********"
           value={password}
           onChange={(e) => handleChange(e.target.value)}
-          required
+          aria-invalid={invalid}
         />
         <InputGroupAddon align="inline-end">
           <Button

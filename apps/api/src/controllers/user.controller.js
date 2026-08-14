@@ -48,9 +48,9 @@ export async function getUserById(req, res, next) {
 
 export async function updateUser(req, res, next) {
    try {
-      const { email } = req.body
+      const { email, password } = req.body
 
-      const user = await UserService.updateUser(req.params.id, { email })
+      const user = await UserService.updateUser(req.params.id, { email, password })
 
       res.status(200).json({ status: 'success', user })
    } catch (error) {

@@ -21,14 +21,32 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@workspace/ui/components/sidebar"
-import { ChevronsUpDownIcon, UserRound, SparklesIcon, BadgeCheckIcon, CreditCardIcon, BellIcon, LogOutIcon, Moon } from "lucide-react"
+import { ChevronsUpDownIcon, UserRound, SparklesIcon, BadgeCheckIcon, CreditCardIcon, BellIcon, LogOutIcon, Moon, PaletteIcon } from "lucide-react"
 import { Switch } from "@workspace/ui/components/switch"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@workspace/ui/components/select"
 import { useCurrentUser } from "@/modules/user/hooks/use-current-user"
 import { useEmployeeByUser } from "@/modules/employee/hooks/use-employee-by-user"
 import { getEmployeeFullName } from "@/modules/employee/services/employee.service"
 import { useLogoutMutation } from "@/modules/auth/hooks/use-logout-mutation"
 import { getInitials } from "@/modules/user/utils"
+import { useColorTheme, ColorTheme, COLOR_THEMES } from "@/components/color-theme-provider"
 import { useRouter } from "next/navigation"
+
+const COLOR_THEME_LABELS: Record<ColorTheme, string> = {
+  blue: "Azul",
+  lime: "Lima",
+  indigo: "Índigo",
+  purple: "Morado",
+  violet: "Violeta",
+  yellow: "Amarillo",
+  emerald: "Esmeralda",
+}
 
 export function NavUser() {
   const { isMobile } = useSidebar()
@@ -36,6 +54,7 @@ export function NavUser() {
   const { data: employee } = useEmployeeByUser(user?.id)
 
   const { resolvedTheme, setTheme } = useTheme()
+  const { colorTheme, setColorTheme } = useColorTheme()
   const logoutMutation = useLogoutMutation()
   const router = useRouter()
 
@@ -113,23 +132,36 @@ export function NavUser() {
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            {/* <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <BadgeCheckIcon
-                />
-                Account
+            <DropdownMenuGroup>
+              <DropdownMenuItem
+                className="flex justify-between cursor-pointer select-none"
+                closeOnClick={false}
+                tabIndex={-1}
+              >
+                <div className="flex items-center w-full justify-between">
+                  <div className="flex items-center gap-2">
+                    <PaletteIcon />
+                    Color
+                  </div>
+                  <Select
+                    value={colorTheme}
+                    onValueChange={(value) => setColorTheme(value as ColorTheme)}
+                  >
+                    <SelectTrigger size="sm" className="w-28" aria-label="Cambiar color">
+                      <SelectValue>{COLOR_THEME_LABELS[colorTheme]}</SelectValue>
+                    </SelectTrigger>
+                    <SelectContent side="right" align="end" alignItemWithTrigger={false}>
+                      {COLOR_THEMES.map((theme) => (
+                        <SelectItem key={theme} value={theme}>
+                          {COLOR_THEME_LABELS[theme]}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
               </DropdownMenuItem>
-              <DropdownMenuItem>
-                <CreditCardIcon
-                />
-                Billing
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <BellIcon
-                />
-                Notifications
-              </DropdownMenuItem>
-            </DropdownMenuGroup> */}
+            </DropdownMenuGroup>
+            <DropdownMenuSeparator />
             <DropdownMenuItem
               disabled={logoutMutation.isPending}
               onClick={() => logoutMutation.mutate()}

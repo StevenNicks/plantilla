@@ -45,6 +45,15 @@ export interface RegisterPayload {
    password: string
 }
 
+export interface ForgotPasswordPayload {
+   email: string
+}
+
+export interface ResetPasswordPayload {
+   token: string
+   password: string
+}
+
 export function login(payload: LoginPayload) {
    return authRequest("/auth/login", payload)
 }
@@ -55,4 +64,12 @@ export function register(payload: RegisterPayload) {
 
 export function logout() {
    return authRequest("/auth/logout", {})
+}
+
+export function forgotPassword(payload: ForgotPasswordPayload) {
+   return authRequest("/auth/forgot-password", payload)
+}
+
+export function resetPassword(payload: ResetPasswordPayload) {
+   return authRequest("/auth/reset-password", payload)
 }

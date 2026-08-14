@@ -2,6 +2,9 @@ import { User } from '../models/user.model.js'
 import { Employee } from '../models/employee.model.js'
 
 import bcrypt from 'bcryptjs'
+import crypto from 'crypto'
+
+const PASSWORD_RESET_EXPIRATION_MS = 60 * 60 * 1000 // 1 hora
 
 export function toPublicUser(user) {
    return {
@@ -47,7 +50,7 @@ export async function createUser({ email, password }) {
    return User.create({ email, password: hashedPassword })
 }
 
-export async function updateUser(id, { email }) {
+export async function updateUser(id, { email, password }) {
    const user = await User.findById(id)
    if (!user) {
       const error = new Error('El usuario no existe')
@@ -66,6 +69,7 @@ export async function updateUser(id, { email }) {
    }
 
    if (email !== undefined) user.email = email
+   if (password) user.password = await bcrypt.hash(password, 10)
 
    await user.save()
 
@@ -92,4 +96,39 @@ export async function findByEmail(email) {
 
 export async function verifyPassword(plainPassword, hashedPassword) {
    return bcrypt.compare(plainPassword, hashedPassword)
+}
+
+export async function createPasswordResetToken(email) {
+   const user = await User.findOne({ email })
+   if (!user) return null
+
+   const rawToken = crypto.randomBytes(32).toString('hex')
+   user.passwordResetTokenHash = crypto.createHash('sha256').update(rawToken).digest('hex')
+   user.passwordResetExpires = new Date(Date.now() + PASSWORD_RESET_EXPIRATION_MS)
+   await user.save()
+
+   return rawToken
+}
+
+export async function resetPasswordWithToken(rawToken, newPassword) {
+   const tokenHash = crypto.createHash('sha256').update(rawToken).digest('hex')
+
+   const user = await User.findOne({
+      passwordResetTokenHash: tokenHash,
+      passwordResetExpires: { $gt: new Date() },
+   }).select('+passwordResetTokenHash +passwordResetExpires')
+
+   if (!user) {
+      const error = new Error('El enlace de recuperación no es válido o expiró')
+      error.status = 400
+      error.code = 'INVALID_RESET_TOKEN'
+      throw error
+   }
+
+   user.password = await bcrypt.hash(newPassword, 10)
+   user.passwordResetTokenHash = undefined
+   user.passwordResetExpires = undefined
+   await user.save()
+
+   return user
 }

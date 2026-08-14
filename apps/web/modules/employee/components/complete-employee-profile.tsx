@@ -2,7 +2,8 @@
 
 import { Button } from "@workspace/ui/components/button"
 import { Card, CardContent, CardHeader, CardDescription, CardTitle } from "@workspace/ui/components/card"
-import { EmployeeForm } from "@/modules/employee/components/employee-form"
+import { FieldGroup } from "@workspace/ui/components/field"
+import { EmployeeFields } from "@/modules/employee/components/employee-fields"
 import { useEmployeeForm } from "@/modules/employee/hooks/use-employee-form"
 import { useCreateEmployeeMutation } from "@/modules/employee/hooks/use-create-employee-mutation"
 
@@ -26,7 +27,9 @@ export function CompleteEmployeeProfile({ userId }: { userId: string }) {
                   )}
                   className="flex flex-col gap-6"
                >
-                  <EmployeeForm form={form} hideUserField />
+                  <FieldGroup>
+                     <EmployeeFields control={form.control} />
+                  </FieldGroup>
                   <Button
                      type="submit"
                      className="self-end"

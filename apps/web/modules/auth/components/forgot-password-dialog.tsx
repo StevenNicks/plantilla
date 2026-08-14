@@ -1,6 +1,8 @@
 "use client"
 
 import { useState } from "react"
+import { useMutation } from "@tanstack/react-query"
+import { toast } from "sonner"
 import { Field, FieldLabel } from "@workspace/ui/components/field"
 import { Input } from "@workspace/ui/components/input"
 import {
@@ -16,21 +18,27 @@ import {
    AlertDialogTrigger,
 } from "@workspace/ui/components/alert-dialog"
 import { MailCheckIcon } from "lucide-react"
+import { forgotPassword } from "@/modules/auth/services/auth.service"
 
 export function ForgotPasswordDialog() {
    const [open, setOpen] = useState(false)
    const [email, setEmail] = useState("")
-   const [sent, setSent] = useState(false)
+
+   const forgotPasswordMutation = useMutation({
+      mutationFn: forgotPassword,
+      onError: (error: Error) => toast.error(error.message),
+   })
 
    const handleSubmit = (e: React.FormEvent) => {
       e.preventDefault()
-      setSent(true)
+      e.stopPropagation()
+      forgotPasswordMutation.mutate({ email })
    }
 
    const handleOpenChange = (nextOpen: boolean) => {
       setOpen(nextOpen)
       if (!nextOpen) {
-         setSent(false)
+         forgotPasswordMutation.reset()
          setEmail("")
       }
    }
@@ -44,7 +52,7 @@ export function ForgotPasswordDialog() {
             ¿Olvidaste tu contraseña?
          </AlertDialogTrigger>
          <AlertDialogContent>
-            {sent ? (
+            {forgotPasswordMutation.isSuccess ? (
                <>
                   <AlertDialogHeader>
                      <AlertDialogMedia>
@@ -85,8 +93,8 @@ export function ForgotPasswordDialog() {
                   </Field>
                   <AlertDialogFooter>
                      <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                     <AlertDialogAction type="submit">
-                        Enviar enlace
+                     <AlertDialogAction type="submit" disabled={forgotPasswordMutation.isPending}>
+                        {forgotPasswordMutation.isPending ? "Enviando..." : "Enviar enlace"}
                      </AlertDialogAction>
                   </AlertDialogFooter>
                </form>

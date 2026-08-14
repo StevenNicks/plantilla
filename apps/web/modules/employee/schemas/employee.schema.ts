@@ -19,15 +19,8 @@ export const employeeSchema = employeeBaseSchema.extend({
 
 export type EmployeeSchemaTypes = z.infer<typeof employeeSchema>
 
-export const employeeWithUserSchema = employeeBaseSchema
-   .extend({
-      email: z.email("Ingresa un correo electrónico válido."),
-      password: z.string().min(8, "La contraseña debe tener al menos 8 caracteres."),
-      confirmPassword: z.string().min(1, "Confirma la contraseña."),
-   })
-   .refine((data) => data.password === data.confirmPassword, {
-      message: "Las contraseñas no coinciden.",
-      path: ["confirmPassword"],
-   })
+export const employeeWithUserSchema = employeeBaseSchema.extend({
+   email: z.email("Ingresa un correo electrónico válido."),
+})
 
 export type EmployeeWithUserSchemaTypes = z.infer<typeof employeeWithUserSchema>

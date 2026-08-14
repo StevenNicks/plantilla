@@ -1,4 +1,9 @@
-import { loginService, registerService } from '../services/auth.service.js'
+import {
+   loginService,
+   registerService,
+   forgotPasswordService,
+   resetPasswordService,
+} from '../services/auth.service.js'
 
 const COOKIE_OPTIONS = {
    httpOnly: true,                                    // La cookie NO es accesible desde JavaScript (protege contra XSS)
@@ -42,6 +47,45 @@ export async function login(req, res, next) {
          status: 'success',
          message: `Bienvenido ${user.email}`,
       })
+   } catch (error) {
+      next(error)
+   }
+}
+
+export async function forgotPassword(req, res, next) {
+   try {
+      const { email } = req.body
+
+      if (!email) {
+         return res.status(400).json({ error: { message: 'email es obligatorio' } })
+      }
+
+      await forgotPasswordService(email)
+
+      res.status(200).json({
+         status: 'success',
+         message: 'Si el correo existe, te enviamos un enlace de recuperación.',
+      })
+   } catch (error) {
+      next(error)
+   }
+}
+
+export async function resetPassword(req, res, next) {
+   try {
+      const { token, password } = req.body
+
+      if (!token || !password) {
+         return res.status(400).json({ error: { message: 'token y password son obligatorios' } })
+      }
+
+      if (password.length < 8) {
+         return res.status(400).json({ error: { message: 'La contraseña debe tener al menos 8 caracteres' } })
+      }
+
+      await resetPasswordService(token, password)
+
+      res.status(200).json({ status: 'success', message: 'Contraseña actualizada correctamente.' })
    } catch (error) {
       next(error)
    }

@@ -16,8 +16,6 @@ const EMPTY_VALUES: EmployeeWithUserSchemaTypes = {
    secondLastName: "",
    birthDate: "",
    email: "",
-   password: "",
-   confirmPassword: "",
 }
 
 export function useEmployeeWithUserForm() {
