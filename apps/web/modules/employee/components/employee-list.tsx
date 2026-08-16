@@ -7,6 +7,7 @@ import { CreateEmployeeDialog } from "@/modules/employee/components/create-emplo
 import { EditEmployeeDialog } from "@/modules/employee/components/edit-employee-dialog"
 import { DeleteEmployeeButton } from "@/modules/employee/components/delete-employee-button"
 import { getEmployeeFullName } from "@/modules/employee/services/employee.service"
+import { EmployeeStatusBadge } from "@/modules/employee/components/employee-status-badge"
 
 export function EmployeeList() {
    const { data: employees, isLoading } = useEmployees()
@@ -37,6 +38,7 @@ export function EmployeeList() {
                               <th className="p-3 font-medium">Nombre</th>
                               <th className="p-3 font-medium">Documento</th>
                               <th className="p-3 font-medium">Correo</th>
+                              <th className="p-3 font-medium">Estado</th>
                               <th className="p-3 font-medium">
                                  <span className="sr-only">Acciones</span>
                               </th>
@@ -51,6 +53,9 @@ export function EmployeeList() {
                                  </td>
                                  <td className="p-3 text-muted-foreground">
                                     {employee.user?.email ?? "—"}
+                                 </td>
+                                 <td className="p-3">
+                                    <EmployeeStatusBadge status={employee.status} />
                                  </td>
                                  <td className="p-3">
                                     <div className="flex items-center justify-end gap-2">

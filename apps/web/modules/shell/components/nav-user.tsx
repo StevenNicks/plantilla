@@ -32,7 +32,7 @@ import {
 } from "@workspace/ui/components/select"
 import { useCurrentUser } from "@/modules/user/hooks/use-current-user"
 import { useEmployeeByUser } from "@/modules/employee/hooks/use-employee-by-user"
-import { getEmployeeFullName } from "@/modules/employee/services/employee.service"
+import { getEmployeeAvatarSrc, getEmployeeFullName } from "@/modules/employee/services/employee.service"
 import { useLogoutMutation } from "@/modules/auth/hooks/use-logout-mutation"
 import { getInitials } from "@/modules/user/utils"
 import { useColorTheme, ColorTheme, COLOR_THEMES } from "@/components/color-theme-provider"
@@ -74,7 +74,10 @@ export function NavUser() {
             }
           >
             <Avatar>
-              <AvatarImage alt={displayName} />
+              <AvatarImage
+                src={employee ? getEmployeeAvatarSrc(employee.gender) : undefined}
+                alt={displayName}
+              />
               <AvatarFallback>{getInitials(displayName)}</AvatarFallback>
             </Avatar>
             <div className="grid flex-1 text-left text-sm leading-tight">
@@ -93,7 +96,10 @@ export function NavUser() {
               <DropdownMenuLabel className="p-0 font-normal">
                 <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                   <Avatar>
-                    <AvatarImage alt={displayName} />
+                    <AvatarImage
+                      src={employee ? getEmployeeAvatarSrc(employee.gender) : undefined}
+                      alt={displayName}
+                    />
                     <AvatarFallback>{getInitials(displayName)}</AvatarFallback>
                   </Avatar>
                   <div className="grid flex-1 text-left text-sm leading-tight">
@@ -167,7 +173,7 @@ export function NavUser() {
               onClick={() => logoutMutation.mutate()}
             >
               <LogOutIcon />
-              {logoutMutation.isPending ? "Cerrando sesión..." : "Log out"}
+              {logoutMutation.isPending ? "Cerrando sesión..." : "Cerrar sesión"}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

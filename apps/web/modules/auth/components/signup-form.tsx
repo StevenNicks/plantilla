@@ -1,6 +1,5 @@
 "use client"
 
-import Image from "next/image"
 import { Controller } from "react-hook-form"
 import { cn } from "@workspace/ui/lib/utils"
 import { Button } from "@workspace/ui/components/button"
@@ -13,6 +12,7 @@ import {
    FieldLabel,
 } from "@workspace/ui/components/field"
 import { Input } from "@workspace/ui/components/input"
+import { AuthVisual } from "@/modules/auth/components/auth-visual"
 import { SignupPasswordFields } from "@/modules/auth/components/signup-password-fields"
 import { useSignupForm } from "@/modules/auth/hooks/use-signup-form"
 import { useSignupMutation } from "@/modules/auth/hooks/use-signup-mutation"
@@ -70,16 +70,7 @@ export function SignupForm({
                      </FieldDescription>
                   </FieldGroup>
                </form>
-               <div className="relative hidden bg-muted md:block">
-                  <Image
-                     src="/placeholder.png"
-                     alt="Imagen"
-                     fill
-                     priority
-                     sizes="(min-width: 768px) 50vw, 0px"
-                     className="object-cover"
-                  />
-               </div>
+               <AuthVisual />
             </CardContent>
          </Card>
       </div>

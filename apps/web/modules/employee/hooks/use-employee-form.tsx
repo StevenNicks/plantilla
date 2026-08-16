@@ -15,6 +15,9 @@ const EMPTY_VALUES: EmployeeSchemaTypes = {
    lastName: "",
    secondLastName: "",
    birthDate: "",
+   gender: "" as EmployeeSchemaTypes["gender"],
+   bloodType: undefined,
+   status: "active",
    user: "",
 }
 

@@ -13,6 +13,35 @@ export const DOCUMENT_TYPE_LABELS: Record<DocumentType, string> = {
    RC: "Registro civil",
 }
 
+export const GENDERS = ["M", "F", "O"] as const
+export type Gender = (typeof GENDERS)[number]
+
+export const GENDER_LABELS: Record<Gender, string> = {
+   M: "Masculino",
+   F: "Femenino",
+   O: "Otro",
+}
+
+const GENDER_AVATARS: Partial<Record<Gender, string>> = {
+   M: "/avatar_male.png",
+   F: "/avatar_famale.png",
+}
+
+export function getEmployeeAvatarSrc(gender: Gender): string | undefined {
+   return GENDER_AVATARS[gender]
+}
+
+export const BLOOD_TYPES = ["O+", "O-", "A+", "A-", "B+", "B-", "AB+", "AB-"] as const
+export type BloodType = (typeof BLOOD_TYPES)[number]
+
+export const EMPLOYEE_STATUSES = ["active", "inactive"] as const
+export type EmployeeStatus = (typeof EMPLOYEE_STATUSES)[number]
+
+export const EMPLOYEE_STATUS_LABELS: Record<EmployeeStatus, string> = {
+   active: "Activo",
+   inactive: "Inactivo",
+}
+
 export interface EmployeeUser {
    id: string
    email: string
@@ -27,6 +56,9 @@ export interface Employee {
    lastName: string
    secondLastName?: string
    birthDate: string
+   gender: Gender
+   bloodType?: BloodType
+   status: EmployeeStatus
    user: EmployeeUser
    createdAt: string
    updatedAt: string
@@ -40,6 +72,9 @@ export interface EmployeePayload {
    lastName: string
    secondLastName?: string
    birthDate: string
+   gender: Gender
+   bloodType?: BloodType
+   status?: EmployeeStatus
    user: string
 }
 
@@ -51,6 +86,9 @@ export interface EmployeeWithUserPayload {
    lastName: string
    secondLastName?: string
    birthDate: string
+   gender: Gender
+   bloodType?: BloodType
+   status?: EmployeeStatus
    email: string
    password: string
 }
@@ -63,6 +101,9 @@ export interface EmployeeUpdateWithUserPayload {
    lastName: string
    secondLastName?: string
    birthDate: string
+   gender: Gender
+   bloodType?: BloodType
+   status?: EmployeeStatus
    email: string
 }
 

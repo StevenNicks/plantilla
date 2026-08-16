@@ -1,6 +1,6 @@
 "use client"
 
-import { TrashIcon } from "lucide-react"
+import { TrashIcon, TriangleAlertIcon } from "lucide-react"
 import { Button } from "@workspace/ui/components/button"
 import {
    AlertDialog,
@@ -10,6 +10,7 @@ import {
    AlertDialogDescription,
    AlertDialogFooter,
    AlertDialogHeader,
+   AlertDialogMedia,
    AlertDialogTitle,
    AlertDialogTrigger,
 } from "@workspace/ui/components/alert-dialog"
@@ -27,6 +28,9 @@ export function DeleteEmployeeButton({ id, name }: { id: string; name: string })
          </AlertDialogTrigger>
          <AlertDialogContent>
             <AlertDialogHeader>
+               <AlertDialogMedia className="bg-destructive/10 text-destructive">
+                  <TriangleAlertIcon />
+               </AlertDialogMedia>
                <AlertDialogTitle>¿Eliminar a {name}?</AlertDialogTitle>
                <AlertDialogDescription>
                   Esta acción no se puede deshacer. El empleado será eliminado permanentemente.
@@ -35,6 +39,7 @@ export function DeleteEmployeeButton({ id, name }: { id: string; name: string })
             <AlertDialogFooter>
                <AlertDialogCancel>Cancelar</AlertDialogCancel>
                <AlertDialogAction
+                  variant="destructive"
                   disabled={deleteEmployeeMutation.isPending}
                   onClick={() => deleteEmployeeMutation.mutate(id)}
                >

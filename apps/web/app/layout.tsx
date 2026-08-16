@@ -41,7 +41,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
             <QueryProvider>
               <TooltipProvider>
                 {children}
-                <Toaster />
+                <Toaster richColors />
               </TooltipProvider>
             </QueryProvider>
           </ColorThemeProvider>

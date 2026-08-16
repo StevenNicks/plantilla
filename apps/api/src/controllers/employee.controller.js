@@ -32,15 +32,15 @@ export async function getEmployeeByUserId(req, res, next) {
 
 export async function createEmployee(req, res, next) {
    try {
-      const { documentType, documentNumber, firstName, middleName, lastName, secondLastName, birthDate, user } = req.body
+      const { documentType, documentNumber, firstName, middleName, lastName, secondLastName, birthDate, gender, bloodType, status, user } = req.body
 
-      if (!documentType || !documentNumber || !firstName || !lastName || !birthDate || !user) {
+      if (!documentType || !documentNumber || !firstName || !lastName || !birthDate || !gender || !user) {
          return res.status(400).json({
-            error: { message: 'documentType, documentNumber, firstName, lastName, birthDate y user son obligatorios' },
+            error: { message: 'documentType, documentNumber, firstName, lastName, birthDate, gender y user son obligatorios' },
          })
       }
 
-      const employee = await EmployeeService.createEmployee({ documentType, documentNumber, firstName, middleName, lastName, secondLastName, birthDate, user })
+      const employee = await EmployeeService.createEmployee({ documentType, documentNumber, firstName, middleName, lastName, secondLastName, birthDate, gender, bloodType, status, user })
 
       res.status(201).json({ status: 'success', employee })
    } catch (error) {
@@ -50,15 +50,15 @@ export async function createEmployee(req, res, next) {
 
 export async function createEmployeeWithUser(req, res, next) {
    try {
-      const { documentType, documentNumber, firstName, middleName, lastName, secondLastName, birthDate, email, password } = req.body
+      const { documentType, documentNumber, firstName, middleName, lastName, secondLastName, birthDate, gender, bloodType, status, email, password } = req.body
 
-      if (!documentType || !documentNumber || !firstName || !lastName || !birthDate || !email || !password) {
+      if (!documentType || !documentNumber || !firstName || !lastName || !birthDate || !gender || !email || !password) {
          return res.status(400).json({
-            error: { message: 'documentType, documentNumber, firstName, lastName, birthDate, email y password son obligatorios' },
+            error: { message: 'documentType, documentNumber, firstName, lastName, birthDate, gender, email y password son obligatorios' },
          })
       }
 
-      const employee = await EmployeeService.createEmployeeWithUser({ documentType, documentNumber, firstName, middleName, lastName, secondLastName, birthDate, email, password })
+      const employee = await EmployeeService.createEmployeeWithUser({ documentType, documentNumber, firstName, middleName, lastName, secondLastName, birthDate, gender, bloodType, status, email, password })
 
       res.status(201).json({ status: 'success', employee })
    } catch (error) {
@@ -68,7 +68,7 @@ export async function createEmployeeWithUser(req, res, next) {
 
 export async function updateEmployee(req, res, next) {
    try {
-      const { documentType, documentNumber, firstName, middleName, lastName, secondLastName, birthDate, user } = req.body
+      const { documentType, documentNumber, firstName, middleName, lastName, secondLastName, birthDate, gender, bloodType, status, user } = req.body
 
       const employee = await EmployeeService.updateEmployee(req.params.id, {
          documentType,
@@ -78,6 +78,9 @@ export async function updateEmployee(req, res, next) {
          lastName,
          secondLastName,
          birthDate,
+         gender,
+         bloodType,
+         status,
          user,
       })
 
@@ -89,7 +92,7 @@ export async function updateEmployee(req, res, next) {
 
 export async function updateEmployeeWithUser(req, res, next) {
    try {
-      const { documentType, documentNumber, firstName, middleName, lastName, secondLastName, birthDate, email, password } = req.body
+      const { documentType, documentNumber, firstName, middleName, lastName, secondLastName, birthDate, gender, bloodType, status, email, password } = req.body
 
       const employee = await EmployeeService.updateEmployeeWithUser(req.params.id, {
          documentType,
@@ -99,6 +102,9 @@ export async function updateEmployeeWithUser(req, res, next) {
          lastName,
          secondLastName,
          birthDate,
+         gender,
+         bloodType,
+         status,
          email,
          password,
       })

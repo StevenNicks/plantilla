@@ -16,6 +16,8 @@ const LABELS: Record<string, string> = {
   home: "Inicio",
   profile: "Perfil",
   employees: "Empleados",
+  tamizajes: "Tamizajes",
+  resultados: "Resultados",
   new: "Nuevo",
 }
 

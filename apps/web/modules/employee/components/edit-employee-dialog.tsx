@@ -40,6 +40,9 @@ export function EditEmployeeDialog({ id }: { id: string }) {
          lastName: employee.lastName,
          secondLastName: employee.secondLastName ?? "",
          birthDate: employee.birthDate.slice(0, 10),
+         gender: employee.gender,
+         bloodType: employee.bloodType,
+         status: employee.status,
          email: employee.user?.email ?? "",
       })
    }, [employee, form])

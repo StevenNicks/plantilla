@@ -39,7 +39,7 @@ export async function getEmployeeById(id) {
    return employee
 }
 
-export async function createEmployee({ documentType, documentNumber, firstName, middleName, lastName, secondLastName, birthDate, user }) {
+export async function createEmployee({ documentType, documentNumber, firstName, middleName, lastName, secondLastName, birthDate, gender, bloodType, status, user }) {
    const existing = await Employee.findOne({ documentNumber })
    if (existing) {
       const linkedUserExists = await User.exists({ _id: existing.user })
@@ -58,6 +58,9 @@ export async function createEmployee({ documentType, documentNumber, firstName, 
       existing.lastName = lastName
       existing.secondLastName = secondLastName
       existing.birthDate = birthDate
+      existing.gender = gender
+      existing.bloodType = bloodType
+      if (status !== undefined) existing.status = status
       existing.user = user
 
       return existing.save()
@@ -65,10 +68,10 @@ export async function createEmployee({ documentType, documentNumber, firstName, 
 
    await assertUserIsLinkable(user)
 
-   return Employee.create({ documentType, documentNumber, firstName, middleName, lastName, secondLastName, birthDate, user })
+   return Employee.create({ documentType, documentNumber, firstName, middleName, lastName, secondLastName, birthDate, gender, bloodType, status, user })
 }
 
-export async function createEmployeeWithUser({ documentType, documentNumber, firstName, middleName, lastName, secondLastName, birthDate, email, password }) {
+export async function createEmployeeWithUser({ documentType, documentNumber, firstName, middleName, lastName, secondLastName, birthDate, gender, bloodType, status, email, password }) {
    const existing = await Employee.findOne({ documentNumber })
    if (existing) {
       const linkedUserExists = await User.exists({ _id: existing.user })
@@ -87,6 +90,9 @@ export async function createEmployeeWithUser({ documentType, documentNumber, fir
       existing.lastName = lastName
       existing.secondLastName = secondLastName
       existing.birthDate = birthDate
+      existing.gender = gender
+      existing.bloodType = bloodType
+      if (status !== undefined) existing.status = status
       existing.user = user._id
 
       return existing.save()
@@ -95,7 +101,7 @@ export async function createEmployeeWithUser({ documentType, documentNumber, fir
    const user = await createUser({ email, password })
 
    try {
-      return await Employee.create({ documentType, documentNumber, firstName, middleName, lastName, secondLastName, birthDate, user: user._id })
+      return await Employee.create({ documentType, documentNumber, firstName, middleName, lastName, secondLastName, birthDate, gender, bloodType, status, user: user._id })
    } catch (error) {
       // No dejar un usuario huérfano si la creación del empleado falla (ej. documentNumber duplicado en una carrera)
       await User.findByIdAndDelete(user._id)
@@ -103,7 +109,7 @@ export async function createEmployeeWithUser({ documentType, documentNumber, fir
    }
 }
 
-export async function updateEmployee(id, { documentType, documentNumber, firstName, middleName, lastName, secondLastName, birthDate, user }) {
+export async function updateEmployee(id, { documentType, documentNumber, firstName, middleName, lastName, secondLastName, birthDate, gender, bloodType, status, user }) {
    const employee = await Employee.findById(id)
    if (!employee) {
       const error = new Error('El empleado no existe')
@@ -132,12 +138,15 @@ export async function updateEmployee(id, { documentType, documentNumber, firstNa
    if (lastName !== undefined) employee.lastName = lastName
    if (secondLastName !== undefined) employee.secondLastName = secondLastName
    if (birthDate !== undefined) employee.birthDate = birthDate
+   if (gender !== undefined) employee.gender = gender
+   if (bloodType !== undefined) employee.bloodType = bloodType
+   if (status !== undefined) employee.status = status
    if (user !== undefined) employee.user = user
 
    return employee.save()
 }
 
-export async function updateEmployeeWithUser(id, { documentType, documentNumber, firstName, middleName, lastName, secondLastName, birthDate, email, password }) {
+export async function updateEmployeeWithUser(id, { documentType, documentNumber, firstName, middleName, lastName, secondLastName, birthDate, gender, bloodType, status, email, password }) {
    const employee = await Employee.findById(id)
    if (!employee) {
       const error = new Error('El empleado no existe')
@@ -166,6 +175,9 @@ export async function updateEmployeeWithUser(id, { documentType, documentNumber,
    if (lastName !== undefined) employee.lastName = lastName
    if (secondLastName !== undefined) employee.secondLastName = secondLastName
    if (birthDate !== undefined) employee.birthDate = birthDate
+   if (gender !== undefined) employee.gender = gender
+   if (bloodType !== undefined) employee.bloodType = bloodType
+   if (status !== undefined) employee.status = status
 
    return employee.save()
 }

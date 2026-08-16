@@ -8,6 +8,8 @@ import { CLIENT_URL } from './configuration/config.js'
 import authRoutes from './routes/auth.routes.js'
 import userRoutes from './routes/user.routes.js'
 import employeeRoutes from './routes/employee.routes.js'
+import tamizajeRoutes from './routes/tamizaje.routes.js'
+import resultadoRoutes from './routes/resultado.routes.js'
 
 const app = express();
 
@@ -31,6 +33,8 @@ app.get('/api', (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/employees', employeeRoutes);
+app.use('/api/tamizajes', tamizajeRoutes);
+app.use('/api/resultados', resultadoRoutes);
 
 // 404
 app.use((req, res) => {

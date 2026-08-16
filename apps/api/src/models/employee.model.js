@@ -40,6 +40,21 @@ const employeeSchema = new mongoose.Schema(
          type: Date,
          required: true,
       },
+      gender: {
+         type: String,
+         required: true,
+         enum: ['M', 'F', 'O'], // Masculino, Femenino, Otro
+      },
+      bloodType: {
+         type: String,
+         enum: ['O+', 'O-', 'A+', 'A-', 'B+', 'B-', 'AB+', 'AB-'],
+      },
+      status: {
+         type: String,
+         required: true,
+         enum: ['active', 'inactive'],
+         default: 'active',
+      },
       user: {
          type: mongoose.Schema.Types.ObjectId,
          ref: 'User',
