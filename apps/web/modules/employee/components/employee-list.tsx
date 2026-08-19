@@ -2,72 +2,53 @@
 
 import { Card, CardContent } from "@workspace/ui/components/card"
 import { Skeleton } from "@workspace/ui/components/skeleton"
+import { DataTable } from "@/components/datatable/data-table"
+import type { FlatFileRow } from "@/lib/parse-flat-file"
 import { useEmployees } from "@/modules/employee/hooks/use-employees"
+import { useImportEmployeesMutation } from "@/modules/employee/hooks/use-import-employees-mutation"
+import { useDeleteEmployeesMutation } from "@/modules/employee/hooks/use-delete-employees-mutation"
 import { CreateEmployeeDialog } from "@/modules/employee/components/create-employee-dialog"
-import { EditEmployeeDialog } from "@/modules/employee/components/edit-employee-dialog"
-import { DeleteEmployeeButton } from "@/modules/employee/components/delete-employee-button"
-import { getEmployeeFullName } from "@/modules/employee/services/employee.service"
-import { EmployeeStatusBadge } from "@/modules/employee/components/employee-status-badge"
+import { employeeColumns } from "@/modules/employee/components/employee-columns"
+import { downloadEmployeeImportTemplate } from "@/modules/employee/utils/employee-import"
+import type { Employee } from "@/modules/employee/services/employee.service"
 
 export function EmployeeList() {
-   const { data: employees, isLoading } = useEmployees()
+   const { data: employees, isLoading, refetch } = useEmployees()
+   const importEmployeesMutation = useImportEmployeesMutation()
+   const deleteEmployeesMutation = useDeleteEmployeesMutation()
+
+   const handleImport = async (rows: FlatFileRow[]) => {
+      return await importEmployeesMutation.mutateAsync(rows)
+   }
+
+   const handleDelete = async (rows: Employee[]) => {
+      await deleteEmployeesMutation.mutateAsync(rows.map((r) => r._id))
+   }
 
    return (
-      <div className="flex flex-col gap-4">
+      <div className="flex min-w-0 flex-col gap-4">
          <div className="flex items-center justify-end">
             <CreateEmployeeDialog />
          </div>
 
-         <Card>
-            <CardContent className="p-0">
+         <Card className="min-w-0">
+            <CardContent className="min-w-0 p-4">
                {isLoading ? (
-                  <div className="flex flex-col gap-3 p-4">
+                  <div className="flex flex-col gap-3">
                      <Skeleton className="h-8 w-full" />
                      <Skeleton className="h-8 w-full" />
                      <Skeleton className="h-8 w-full" />
                   </div>
-               ) : !employees?.length ? (
-                  <p className="p-6 text-center text-sm text-muted-foreground">
-                     No hay empleados registrados.
-                  </p>
                ) : (
-                  <div className="overflow-x-auto">
-                     <table className="w-full text-sm">
-                        <thead>
-                           <tr className="border-b text-left text-muted-foreground">
-                              <th className="p-3 font-medium">Nombre</th>
-                              <th className="p-3 font-medium">Documento</th>
-                              <th className="p-3 font-medium">Correo</th>
-                              <th className="p-3 font-medium">Estado</th>
-                              <th className="p-3 font-medium">
-                                 <span className="sr-only">Acciones</span>
-                              </th>
-                           </tr>
-                        </thead>
-                        <tbody>
-                           {employees.map((employee) => (
-                              <tr key={employee._id} className="border-b last:border-0">
-                                 <td className="p-3 font-medium">{getEmployeeFullName(employee)}</td>
-                                 <td className="p-3 text-muted-foreground">
-                                    {employee.documentType} {employee.documentNumber}
-                                 </td>
-                                 <td className="p-3 text-muted-foreground">
-                                    {employee.user?.email ?? "—"}
-                                 </td>
-                                 <td className="p-3">
-                                    <EmployeeStatusBadge status={employee.status} />
-                                 </td>
-                                 <td className="p-3">
-                                    <div className="flex items-center justify-end gap-2">
-                                       <EditEmployeeDialog id={employee._id} />
-                                       <DeleteEmployeeButton id={employee._id} name={getEmployeeFullName(employee)} />
-                                    </div>
-                                 </td>
-                              </tr>
-                           ))}
-                        </tbody>
-                     </table>
-                  </div>
+                  <DataTable
+                     columns={employeeColumns}
+                     data={employees ?? []}
+                     onRefresh={refetch}
+                     onImportRows={handleImport}
+                     onDownloadTemplate={downloadEmployeeImportTemplate}
+                     onDeleteRows={handleDelete}
+                     exportFileName="EMPLEADOS"
+                  />
                )}
             </CardContent>
          </Card>

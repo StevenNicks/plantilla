@@ -16,13 +16,28 @@ import {
 } from "@workspace/ui/components/alert-dialog"
 import { useDeleteResultadoMutation } from "@/modules/resultado/hooks/use-delete-resultado-mutation"
 
-export function DeleteResultadoButton({ id, name }: { id: string; name: string }) {
+export function DeleteResultadoButton({
+   id,
+   name,
+   disabled = false,
+}: {
+   id: string
+   name: string
+   disabled?: boolean
+}) {
    const deleteResultadoMutation = useDeleteResultadoMutation()
 
    return (
       <AlertDialog>
          <AlertDialogTrigger
-            render={<Button variant="destructive" size="icon-sm" aria-label="Eliminar resultado" />}
+            render={
+               <Button
+                  variant="destructive"
+                  size="icon-sm"
+                  aria-label="Eliminar resultado"
+                  disabled={disabled}
+               />
+            }
          >
             <TrashIcon />
          </AlertDialogTrigger>

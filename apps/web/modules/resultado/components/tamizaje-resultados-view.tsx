@@ -11,9 +11,10 @@ import { ResultadoList } from "@/modules/resultado/components/resultado-list"
 
 export function TamizajeResultadosView({ tamizajeId }: { tamizajeId: string }) {
    const { data: tamizaje, isLoading } = useTamizaje(tamizajeId)
+   const canManage = tamizaje?.status === "active"
 
    return (
-      <div className="flex flex-col gap-4">
+      <div className="flex min-w-0 flex-col gap-4">
          <Button
             variant="ghost"
             size="sm"
@@ -32,17 +33,19 @@ export function TamizajeResultadosView({ tamizajeId }: { tamizajeId: string }) {
                ) : (
                   <>
                      <h1 className="text-xl font-semibold">{tamizaje?.name}</h1>
-                     {tamizaje && <TamizajeStatusBadge status={tamizaje.status} />}
                      {tamizaje && (
-                        <span className="text-muted-foreground text-sm">#{tamizaje.code}</span>
+                        <span className="text-lg font-bold">#{tamizaje.code}</span>
                      )}
+                     {tamizaje && <TamizajeStatusBadge status={tamizaje.status} />}
                   </>
                )}
             </div>
-            <CreateResultadoDialog tamizajeId={tamizajeId} />
+            {!isLoading && (
+               <CreateResultadoDialog tamizajeId={tamizajeId} disabled={!canManage} />
+            )}
          </div>
 
-         <ResultadoList tamizajeId={tamizajeId} />
+         <ResultadoList tamizajeId={tamizajeId} canManage={canManage} />
       </div>
    )
 }

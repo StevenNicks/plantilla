@@ -1,6 +1,6 @@
 "use client"
 
-import { useId, useState } from "react"
+import { useId, useMemo, useState } from "react"
 import { Controller } from "react-hook-form"
 import { PlusIcon } from "lucide-react"
 import { Button } from "@workspace/ui/components/button"
@@ -16,12 +16,18 @@ import {
 } from "@workspace/ui/components/dialog"
 import { Field, FieldError, FieldGroup, FieldLabel } from "@workspace/ui/components/field"
 import {
-   Select,
-   SelectContent,
-   SelectItem,
-   SelectTrigger,
-   SelectValue,
-} from "@workspace/ui/components/select"
+   Tooltip,
+   TooltipContent,
+   TooltipTrigger,
+} from "@workspace/ui/components/tooltip"
+import {
+   Combobox,
+   ComboboxContent,
+   ComboboxEmpty,
+   ComboboxInput,
+   ComboboxItem,
+   ComboboxList,
+} from "@workspace/ui/components/combobox"
 import { ResultadoVitalsFields } from "@/modules/resultado/components/resultado-vitals-fields"
 import { useCreateResultadoForm } from "@/modules/resultado/hooks/use-create-resultado-form"
 import { useCreateResultadoMutation } from "@/modules/resultado/hooks/use-create-resultado-mutation"
@@ -29,7 +35,18 @@ import { useEmployees } from "@/modules/employee/hooks/use-employees"
 import { useResultados } from "@/modules/resultado/hooks/use-resultados"
 import { getEmployeeFullName } from "@/modules/employee/services/employee.service"
 
-export function CreateResultadoDialog({ tamizajeId }: { tamizajeId: string }) {
+interface EmployeeOption {
+   value: string
+   label: string
+}
+
+export function CreateResultadoDialog({
+   tamizajeId,
+   disabled = false,
+}: {
+   tamizajeId: string
+   disabled?: boolean
+}) {
    const formId = useId()
    const [open, setOpen] = useState(false)
    const { form } = useCreateResultadoForm()
@@ -39,6 +56,29 @@ export function CreateResultadoDialog({ tamizajeId }: { tamizajeId: string }) {
 
    const registeredEmployeeIds = new Set(resultados?.map((r) => r.employee._id))
    const availableEmployees = employees?.filter((e) => !registeredEmployeeIds.has(e._id)) ?? []
+
+   const employeeOptions: EmployeeOption[] = useMemo(
+      () =>
+         availableEmployees.map((employee) => ({
+            value: employee._id,
+            label: getEmployeeFullName(employee),
+         })),
+      [availableEmployees]
+   )
+
+   if (disabled) {
+      return (
+         <Tooltip>
+            <TooltipTrigger render={<span className="inline-flex" />}>
+               <Button disabled>
+                  <PlusIcon />
+                  Registrar resultado
+               </Button>
+            </TooltipTrigger>
+            <TooltipContent>El tamizaje está inactivo, no se pueden registrar resultados.</TooltipContent>
+         </Tooltip>
+      )
+   }
 
    return (
       <Dialog
@@ -81,42 +121,32 @@ export function CreateResultadoDialog({ tamizajeId }: { tamizajeId: string }) {
                   render={({ field, fieldState }) => (
                      <Field data-invalid={fieldState.invalid}>
                         <FieldLabel htmlFor={field.name}>Empleado</FieldLabel>
-                        <Select
-                           value={field.value}
-                           onValueChange={field.onChange}
-                           name={field.name}
+                        <Combobox
+                           items={employeeOptions}
+                           value={employeeOptions.find((o) => o.value === field.value) ?? null}
+                           onValueChange={(option) => field.onChange(option?.value ?? "")}
                         >
-                           <SelectTrigger
+                           <ComboboxInput
                               id={field.name}
-                              className="w-full"
+                              placeholder="Selecciona un empleado"
                               aria-invalid={fieldState.invalid}
                               onBlur={field.onBlur}
-                           >
-                              <SelectValue placeholder="Selecciona un empleado">
-                                 {field.value
-                                    ? getEmployeeFullName(
-                                         employees?.find((e) => e._id === field.value) ?? {
-                                            firstName: "",
-                                            lastName: "",
-                                         }
-                                      )
-                                    : undefined}
-                              </SelectValue>
-                           </SelectTrigger>
-                           <SelectContent alignItemWithTrigger={false}>
-                              {availableEmployees.length === 0 ? (
-                                 <p className="text-muted-foreground px-2 py-1.5 text-sm">
-                                    No hay empleados disponibles.
-                                 </p>
-                              ) : (
-                                 availableEmployees.map((employee) => (
-                                    <SelectItem key={employee._id} value={employee._id}>
-                                       {getEmployeeFullName(employee)}
-                                    </SelectItem>
-                                 ))
-                              )}
-                           </SelectContent>
-                        </Select>
+                           />
+                           <ComboboxContent>
+                              <ComboboxEmpty>
+                                 {employeeOptions.length === 0
+                                    ? "No hay empleados disponibles."
+                                    : "No se encontraron empleados."}
+                              </ComboboxEmpty>
+                              <ComboboxList>
+                                 {(option: EmployeeOption) => (
+                                    <ComboboxItem key={option.value} value={option}>
+                                       {option.label}
+                                    </ComboboxItem>
+                                 )}
+                              </ComboboxList>
+                           </ComboboxContent>
+                        </Combobox>
                         {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
                      </Field>
                   )}

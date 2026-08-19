@@ -1,78 +1,67 @@
 "use client"
 
-import Link from "next/link"
-import { ClipboardListIcon } from "lucide-react"
-import { Button } from "@workspace/ui/components/button"
+import { useMemo } from "react"
 import { Card, CardContent } from "@workspace/ui/components/card"
 import { Skeleton } from "@workspace/ui/components/skeleton"
+import { DataTable } from "@/components/datatable/data-table"
 import { useTamizajes } from "@/modules/tamizaje/hooks/use-tamizajes"
+import { useDeleteTamizajesMutation } from "@/modules/tamizaje/hooks/use-delete-tamizajes-mutation"
 import { CreateTamizajeDialog } from "@/modules/tamizaje/components/create-tamizaje-dialog"
-import { EditTamizajeDialog } from "@/modules/tamizaje/components/edit-tamizaje-dialog"
-import { DeleteTamizajeButton } from "@/modules/tamizaje/components/delete-tamizaje-button"
-import { TamizajeStatusBadge } from "@/modules/tamizaje/components/tamizaje-status-badge"
+import { buildTamizajeColumns } from "@/modules/tamizaje/components/tamizaje-columns"
+import type { Tamizaje } from "@/modules/tamizaje/services/tamizaje.service"
+import { useResultados } from "@/modules/resultado/hooks/use-resultados"
+import { useEmployees } from "@/modules/employee/hooks/use-employees"
 
 export function TamizajeList() {
-   const { data: tamizajes, isLoading } = useTamizajes()
+   const { data: tamizajes, isLoading, refetch } = useTamizajes()
+   const deleteTamizajesMutation = useDeleteTamizajesMutation()
+   const { data: resultados } = useResultados()
+   const { data: employees } = useEmployees()
+
+   const handleDelete = async (rows: Tamizaje[]) => {
+      await deleteTamizajesMutation.mutateAsync(rows.map((r) => r._id))
+   }
+
+   const resultadosCountByTamizaje = useMemo(() => {
+      const counts = new Map<string, number>()
+      for (const resultado of resultados ?? []) {
+         const id = resultado.tamizaje._id
+         counts.set(id, (counts.get(id) ?? 0) + 1)
+      }
+      return counts
+   }, [resultados])
+
+   const activeEmployeesCount = useMemo(
+      () => employees?.filter((e) => e.status === "active").length ?? 0,
+      [employees]
+   )
+
+   const columns = useMemo(
+      () => buildTamizajeColumns({ resultadosCountByTamizaje, activeEmployeesCount }),
+      [resultadosCountByTamizaje, activeEmployeesCount]
+   )
 
    return (
-      <div className="flex flex-col gap-4">
+      <div className="flex min-w-0 flex-col gap-4">
          <div className="flex items-center justify-end">
             <CreateTamizajeDialog />
          </div>
 
-         <Card>
-            <CardContent className="p-0">
+         <Card className="min-w-0">
+            <CardContent className="min-w-0 p-4">
                {isLoading ? (
-                  <div className="flex flex-col gap-3 p-4">
+                  <div className="flex flex-col gap-3">
                      <Skeleton className="h-8 w-full" />
                      <Skeleton className="h-8 w-full" />
                      <Skeleton className="h-8 w-full" />
                   </div>
-               ) : !tamizajes?.length ? (
-                  <p className="p-6 text-center text-sm text-muted-foreground">
-                     No hay tamizajes registrados.
-                  </p>
                ) : (
-                  <div className="overflow-x-auto">
-                     <table className="w-full text-sm">
-                        <thead>
-                           <tr className="border-b text-left text-muted-foreground">
-                              <th className="p-3 font-medium">Nombre</th>
-                              <th className="p-3 font-medium">Código</th>
-                              <th className="p-3 font-medium">Estado</th>
-                              <th className="p-3 font-medium">
-                                 <span className="sr-only">Acciones</span>
-                              </th>
-                           </tr>
-                        </thead>
-                        <tbody>
-                           {tamizajes.map((tamizaje) => (
-                              <tr key={tamizaje._id} className="border-b last:border-0">
-                                 <td className="p-3 font-medium">{tamizaje.name}</td>
-                                 <td className="p-3 text-muted-foreground">{tamizaje.code}</td>
-                                 <td className="p-3">
-                                    <TamizajeStatusBadge status={tamizaje.status} />
-                                 </td>
-                                 <td className="p-3">
-                                    <div className="flex items-center justify-end gap-2">
-                                       <Button
-                                          variant="outline"
-                                          size="sm"
-                                          nativeButton={false}
-                                          render={<Link href={`/tamizajes/${tamizaje._id}/resultados`} />}
-                                       >
-                                          <ClipboardListIcon />
-                                          Realizar tamizaje
-                                       </Button>
-                                       <EditTamizajeDialog id={tamizaje._id} />
-                                       <DeleteTamizajeButton id={tamizaje._id} name={tamizaje.name} />
-                                    </div>
-                                 </td>
-                              </tr>
-                           ))}
-                        </tbody>
-                     </table>
-                  </div>
+                  <DataTable
+                     columns={columns}
+                     data={tamizajes ?? []}
+                     onRefresh={refetch}
+                     onDeleteRows={handleDelete}
+                  />
                )}
             </CardContent>
          </Card>

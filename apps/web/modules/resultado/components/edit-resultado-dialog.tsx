@@ -20,7 +20,7 @@ import { useResultadoForm } from "@/modules/resultado/hooks/use-resultado-form"
 import { useResultado } from "@/modules/resultado/hooks/use-resultado"
 import { useUpdateResultadoMutation } from "@/modules/resultado/hooks/use-update-resultado-mutation"
 
-export function EditResultadoDialog({ id }: { id: string }) {
+export function EditResultadoDialog({ id, disabled = false }: { id: string; disabled?: boolean }) {
    const formId = useId()
    const [open, setOpen] = useState(false)
    const { data: resultado, isLoading } = useResultado(open ? id : "")
@@ -56,7 +56,14 @@ export function EditResultadoDialog({ id }: { id: string }) {
             )}
          >
             <DialogTrigger
-               render={<Button variant="outline" size="icon-sm" aria-label="Editar resultado" />}
+               render={
+                  <Button
+                     variant="outline"
+                     size="icon-sm"
+                     aria-label="Editar resultado"
+                     disabled={disabled}
+                  />
+               }
             >
                <PencilIcon />
             </DialogTrigger>

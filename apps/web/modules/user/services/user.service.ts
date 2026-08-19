@@ -31,3 +31,13 @@ export async function getCurrentUser(): Promise<CurrentUser> {
    return data.user
 }
 
+export interface PublicUser {
+   id: string
+   email: string
+}
+
+export async function getUnlinkedUsers(): Promise<PublicUser[]> {
+   const data = await userRequest<{ users: PublicUser[] }>("/user?unlinked=true")
+   return data.users
+}
+
