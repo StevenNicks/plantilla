@@ -1,6 +1,13 @@
 "use client"
 
-import { Card, CardContent } from "@workspace/ui/components/card"
+import {
+   Card,
+   CardAction,
+   CardContent,
+   CardDescription,
+   CardHeader,
+   CardTitle,
+} from "@workspace/ui/components/card"
 import { Skeleton } from "@workspace/ui/components/skeleton"
 import { DataTable } from "@/components/datatable/data-table"
 import type { FlatFileRow } from "@/lib/parse-flat-file"
@@ -27,11 +34,14 @@ export function EmployeeList() {
 
    return (
       <div className="flex min-w-0 flex-col gap-4">
-         <div className="flex items-center justify-end">
-            <CreateEmployeeDialog />
-         </div>
-
          <Card className="min-w-0">
+            <CardHeader>
+               <CardTitle>Empleados</CardTitle>
+               <CardDescription>Gestiona los empleados de tu organización.</CardDescription>
+               <CardAction>
+                  <CreateEmployeeDialog />
+               </CardAction>
+            </CardHeader>
             <CardContent className="min-w-0 p-4">
                {isLoading ? (
                   <div className="flex flex-col gap-3">

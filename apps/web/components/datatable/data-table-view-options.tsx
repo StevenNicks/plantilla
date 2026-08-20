@@ -4,7 +4,7 @@ import * as React from "react"
 import { type Table } from "@tanstack/react-table"
 import {
    ChevronDown,
-   Columns2,
+   Columns3,
    Download,
    FileSpreadsheet,
    RefreshCw,
@@ -38,6 +38,11 @@ import {
    DropdownMenuSeparator,
    DropdownMenuTrigger,
 } from "@workspace/ui/components/dropdown-menu"
+import {
+   Tooltip,
+   TooltipContent,
+   TooltipTrigger,
+} from "@workspace/ui/components/tooltip"
 import { exportTable, type ExportFormat } from "@/lib/export-table"
 import { parseFlatFile, type FlatFileRow } from "@/lib/parse-flat-file"
 
@@ -200,7 +205,7 @@ export function DataTableViewOptions<TData>({
    }
 
    return (
-      <div className="flex items-center gap-2">
+      <div className="flex flex-wrap items-center gap-2">
          {onImportRows && (
             <input
                ref={fileInputRef}
@@ -214,10 +219,21 @@ export function DataTableViewOptions<TData>({
          {onDeleteRows && selectedCount > 0 && (
             <AlertDialog>
                <AlertDialogTrigger
-                  render={<Button variant="destructive" disabled={isDeleting} />}
+                  render={
+                     <Button
+                        variant="destructive"
+                        disabled={isDeleting}
+                        aria-label={
+                           isDeleting ? "Eliminando registros" : `Eliminar ${selectedCount} registro(s)`
+                        }
+                     />
+                  }
                >
                   <TrashIcon aria-hidden="true" />
-                  {isDeleting ? "Eliminando..." : `Eliminar (${selectedCount})`}
+                  <span className="hidden sm:inline">
+                     {isDeleting ? "Eliminando..." : `Eliminar (${selectedCount})`}
+                  </span>
+                  <span className="sm:hidden">{selectedCount}</span>
                </AlertDialogTrigger>
                <AlertDialogContent>
                   <AlertDialogHeader>
@@ -248,38 +264,74 @@ export function DataTableViewOptions<TData>({
          {hasFilters && (
             <Button
                variant="destructive"
+               aria-label="Borrar filtros"
                onClick={() => {
                   table.resetColumnFilters()
                   table.setGlobalFilter("")
                }}
             >
-               <X className="size-4" />
-               Borrar filtros
+               <X aria-hidden="true" />
+               <span className="hidden sm:inline">Borrar filtros</span>
             </Button>
          )}
 
          {onRefresh && (
-            <Button variant="outline" onClick={handleRefresh} disabled={isRefreshing}>
-               <RefreshCw className={isRefreshing ? "animate-spin" : ""} aria-hidden="true" />
-               {isRefreshing ? "Actualizando..." : "Actualizar"}
-            </Button>
+            <Tooltip>
+               <TooltipTrigger
+                  render={
+                     <Button
+                        variant="outline"
+                        onClick={handleRefresh}
+                        disabled={isRefreshing}
+                        aria-label={isRefreshing ? "Actualizando" : "Actualizar"}
+                     />
+                  }
+               >
+                  <RefreshCw className={isRefreshing ? "animate-spin" : ""} aria-hidden="true" />
+                  <span className="hidden sm:inline">
+                     {isRefreshing ? "Actualizando..." : "Actualizar"}
+                  </span>
+               </TooltipTrigger>
+               <TooltipContent className="sm:hidden">Actualizar</TooltipContent>
+            </Tooltip>
          )}
 
          {onImportRows && (
             <ButtonGroup>
-               <Button variant="outline" onClick={openFilePicker} disabled={isImporting}>
-                  <Upload aria-hidden="true" />
-                  {isImporting ? "Importando..." : "Importar"}
-               </Button>
-               {onDownloadTemplate && (
-                  <Button
-                     variant="outline"
-                     onClick={handleDownloadTemplate}
-                     disabled={isDownloadingTemplate}
-                     aria-label="Descargar plantilla de importación"
+               <Tooltip>
+                  <TooltipTrigger
+                     render={
+                        <Button
+                           variant="outline"
+                           onClick={openFilePicker}
+                           disabled={isImporting}
+                           aria-label={isImporting ? "Importando" : "Importar"}
+                        />
+                     }
                   >
-                     <Download aria-hidden="true" />
-                  </Button>
+                     <Upload aria-hidden="true" />
+                     <span className="hidden sm:inline">
+                        {isImporting ? "Importando..." : "Importar"}
+                     </span>
+                  </TooltipTrigger>
+                  <TooltipContent className="sm:hidden">Importar</TooltipContent>
+               </Tooltip>
+               {onDownloadTemplate && (
+                  <Tooltip>
+                     <TooltipTrigger
+                        render={
+                           <Button
+                              variant="outline"
+                              onClick={handleDownloadTemplate}
+                              disabled={isDownloadingTemplate}
+                              aria-label="Descargar plantilla de importación"
+                           />
+                        }
+                     >
+                        <Download aria-hidden="true" />
+                     </TooltipTrigger>
+                     <TooltipContent>Descargar plantilla</TooltipContent>
+                  </Tooltip>
                )}
             </ButtonGroup>
          )}
@@ -287,24 +339,31 @@ export function DataTableViewOptions<TData>({
          <ButtonGroup>
             <Button variant="outline" onClick={handleExport} disabled={isExporting}>
                <FileSpreadsheet aria-hidden="true" />
-               {isExporting ? "Exportando..." : "Exportar"}
+               <span className="hidden sm:inline">{isExporting ? "Exportando..." : "Exportar"}</span>
                <span className="text-xs font-medium opacity-60 px-1">
                   {exportFormat.toUpperCase()}
                </span>
             </Button>
             <DropdownMenu>
-               <DropdownMenuTrigger
-                  render={
-                     <Button
-                        variant="outline"
-                        size="icon"
-                        className="shrink-0"
-                        aria-label="Seleccionar formato de exportación"
-                     />
-                  }
-               >
-                  <ChevronDown aria-hidden="true" />
-               </DropdownMenuTrigger>
+               <Tooltip>
+                  <TooltipTrigger
+                     render={
+                        <DropdownMenuTrigger
+                           render={
+                              <Button
+                                 variant="outline"
+                                 size="icon"
+                                 className="shrink-0"
+                                 aria-label="Seleccionar formato de exportación"
+                              />
+                           }
+                        />
+                     }
+                  >
+                     <ChevronDown aria-hidden="true" />
+                  </TooltipTrigger>
+                  <TooltipContent>Formato de exportación</TooltipContent>
+               </Tooltip>
                <DropdownMenuContent align="end" className="w-36">
                   <DropdownMenuGroup>
                      {EXPORT_FORMATS.map((format) => (
@@ -324,12 +383,18 @@ export function DataTableViewOptions<TData>({
          </ButtonGroup>
 
          <DropdownMenu>
-            <DropdownMenuTrigger
-               render={<Button variant="outline" aria-label="Visibilidad de columnas" />}
-            >
-               <Columns2 aria-hidden="true" />
-               Columnas
-            </DropdownMenuTrigger>
+            <Tooltip>
+               <TooltipTrigger
+                  render={
+                     <DropdownMenuTrigger
+                        render={<Button variant="outline" aria-label="Visibilidad de columnas" />}
+                     />
+                  }
+               >
+                  <Columns3 aria-hidden="true" />
+               </TooltipTrigger>
+               <TooltipContent>Columnas</TooltipContent>
+            </Tooltip>
             <DropdownMenuContent align="end" className="w-auto">
                <DropdownMenuGroup>
                   <DropdownMenuLabel>Columnas</DropdownMenuLabel>
